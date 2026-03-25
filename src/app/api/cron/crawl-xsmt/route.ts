@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { crawlXSMN } from '@/scripts/crawlers/xsmn' // sẽ tạo sau
+import { crawlXSMT } from '@/scripts/crawlers/xsmt'
 
 export const maxDuration = 60
 
@@ -9,6 +9,6 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // TODO: implement crawlXSMN tương tự XSMB
-    return NextResponse.json({ message: 'XSMN crawler not yet implemented' })
+    // TODO: implement crawlXSMT tương tự XSMN
+    return NextResponse.json({ message: 'XSMT crawler not yet implemented' })
 }
