@@ -182,9 +182,27 @@ function parseDaiphat(html: string): ParsedProvince[] {
     })
 
     return codes.flatMap(code => {
+
+        const PRIZE_ORDER: PrizeName[] = [
+            PrizeName.DB,
+            PrizeName.G1,
+            PrizeName.G2,
+            PrizeName.G3,
+            PrizeName.G4,
+            PrizeName.G5,
+            PrizeName.G6,
+            PrizeName.G7,
+        ]
+
         const prizes = prizeMap[code]
+            .filter(p => PRIZE_ORDER.includes(p.name)) // 🔥 loại KENO trước
+
         if (!prizes.length) return []
-        prizes.sort((a, b) => PRIZE_ORDER.indexOf(a.name) - PRIZE_ORDER.indexOf(b.name))
+
+        prizes.sort(
+            (a, b) =>
+                PRIZE_ORDER.indexOf(a.name) - PRIZE_ORDER.indexOf(b.name)
+        )
         return [{ code, prizes }]
     })
 }

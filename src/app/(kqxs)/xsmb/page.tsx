@@ -109,8 +109,8 @@ export default async function XSMBPage() {
                 </div>
                 {draw && (
                     <span className={`shrink-0 text-xs font-semibold px-3 py-1.5 rounded-full mt-1 ${draw.isComplete
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-blue-100 text-blue-700 animate-pulse'
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-blue-100 text-blue-700 animate-pulse'
                         }`}>
                         {draw.isComplete ? '✓ Đã có kết quả' : '⦿ Đang quay...'}
                     </span>
@@ -121,8 +121,8 @@ export default async function XSMBPage() {
                 <>
                     {/* ── Mã ký hiệu đặc biệt ── */}
                     <div className={`rounded-xl border p-4 ${draw.specialCodes?.length > 0
-                            ? 'bg-amber-50 border-amber-200'
-                            : 'bg-gray-50 border-gray-200'
+                        ? 'bg-amber-50 border-amber-200'
+                        : 'bg-gray-50 border-gray-200'
                         }`}>
                         <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">
                             Mã ký hiệu trúng Đặc Biệt
@@ -230,8 +230,15 @@ export default async function XSMBPage() {
                                     </thead>
                                     <tbody>
                                         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(head => {
-                                            const key = `head${head}`
-                                            const tails = (draw.lotoResults[key] ?? [])
+                                            // const key = `head${head}`
+                                            // const tails = (draw.lotoResults[key] ?? [])
+                                            type HeadKey =
+                                                | 'head0' | 'head1' | 'head2' | 'head3' | 'head4'
+                                                | 'head5' | 'head6' | 'head7' | 'head8' | 'head9'
+
+                                            const key = `head${head}` as HeadKey
+                                            const tails = draw.lotoResults?.[key] ?? []
+
                                             return (
                                                 <tr key={head} className="border-t border-gray-50">
                                                     <td className="px-4 py-2 font-bold text-gray-400 text-sm">{head}x</td>
@@ -241,8 +248,8 @@ export default async function XSMBPage() {
                                                         return (
                                                             <td key={tail} className="px-1 py-1.5 text-center">
                                                                 <span className={`inline-flex items-center justify-center w-9 h-9 rounded-lg text-xs font-bold ${hit
-                                                                        ? 'bg-amber-100 text-amber-800 border border-amber-200 shadow-sm'
-                                                                        : 'text-gray-200 bg-gray-50'
+                                                                    ? 'bg-amber-100 text-amber-800 border border-amber-200 shadow-sm'
+                                                                    : 'text-gray-200 bg-gray-50'
                                                                     }`}>
                                                                     {String(num).padStart(2, '0')}
                                                                 </span>

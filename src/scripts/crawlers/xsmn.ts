@@ -194,9 +194,27 @@ function parseDaiphat(html: string): ParsedProvince[] {
 
     // Build result, sort giải theo thứ tự chuẩn
     return codes.flatMap(code => {
+        // const prizes = prizeMap[code]
+        // if (!prizes.length) return []
+        // prizes.sort((a, b) => PRIZE_ORDER.indexOf(a.name) - PRIZE_ORDER.indexOf(b.name))
+        const VALID_PRIZES: PrizeName[] = [
+            PrizeName.DB,
+            PrizeName.G1,
+            PrizeName.G2,
+            PrizeName.G3,
+            PrizeName.G4,
+            PrizeName.G5,
+            PrizeName.G6,
+            PrizeName.G7,
+        ]
+
         const prizes = prizeMap[code]
-        if (!prizes.length) return []
-        prizes.sort((a, b) => PRIZE_ORDER.indexOf(a.name) - PRIZE_ORDER.indexOf(b.name))
+            .filter(p => VALID_PRIZES.includes(p.name)) // 🔥 loại KENO
+
+        prizes.sort(
+            (a, b) =>
+                VALID_PRIZES.indexOf(a.name) - VALID_PRIZES.indexOf(b.name)
+        )
         return [{ code, prizes }]
     })
 }
