@@ -44,6 +44,40 @@ function normalizeNum(s: string): string {
     return s.replace(/\D/g, '').trim()
 }
 
+// Thêm hàm này sau hàm normalizeNum
+function parseSpecialCodes(html: string): string[] {
+    const $ = cheerio.load(html)
+    const codes: string[] = []
+
+    // ── Nguồn 1: xoso.com.vn ─────────────────────────
+    // <span id=mb_prizeCode_item0 class=code-DB8> 5YZ </span>
+    $('span[id^="mb_prizeCode_item"]').each((_, el) => {
+        const code = $(el).text().replace(/\s/g, '').trim()
+        if (code.length > 0) codes.push(code)
+    })
+    if (codes.length > 0) return codes
+
+    // ── Nguồn 2: minhngoc.net.vn ─────────────────────
+    // <div class="loaive_content">9YZ-18YZ-17YZ-6YZ...</div>
+    const loaiText = $('div.loaive_content').first().text().trim()
+    if (loaiText) {
+        loaiText.split('-').forEach(c => {
+            const code = c.trim()
+            if (code.length > 0) codes.push(code)
+        })
+        if (codes.length > 0) return codes
+    }
+
+    // ── Nguồn 3: xosodaiphat.com ─────────────────────
+    // <span id=mb_prizeCode_item_0 class="madb8 special-code">10YX</span>
+    $('span[id^="mb_prizeCode_item_"]').each((_, el) => {
+        const code = $(el).text().replace(/\s/g, '').trim()
+        if (code.length > 0) codes.push(code)
+    })
+
+    return codes
+}
+
 async function fetchText(url: string): Promise<string> {
     for (let attempt = 1; attempt <= 3; attempt++) {
         try {
@@ -338,7 +372,8 @@ async function sendTelegramAlert(message: string): Promise<void> {
 async function insertToDB(
     prizes: ParsedPrize[],
     drawDate: Date,
-    source: string
+    source: string,
+    specialCodes: string[] = []
 ): Promise<number> {
     const lotteryType = await prisma.lotteryType.findUnique({ where: { code: 'XSMB' } })
     if (!lotteryType) throw new Error('LotteryType XSMB not found — đã chạy seed chưa?')
@@ -346,8 +381,8 @@ async function insertToDB(
     const province = await prisma.province.findUnique({ where: { code: 'HN' } })
     if (!province) throw new Error('Province HN not found — đã chạy seed chưa?')
 
-    const date = new Date(drawDate)
-    date.setHours(0, 0, 0, 0)
+    const [yyyy, mm, dd] = drawDate.toISOString().split('T')[0].split('-').map(Number)
+    const date = new Date(Date.UTC(yyyy, mm - 1, dd, 0, 0, 0, 0))
 
     const draw = await prisma.draw.upsert({
         where: {
@@ -357,7 +392,7 @@ async function insertToDB(
                 provinceId: province.id,
             },
         },
-        update: { isComplete: true, crawledAt: new Date(), crawlSource: source },
+        update: { isComplete: true, crawledAt: new Date(), crawlSource: source, specialCodes, },
         create: {
             drawDate: date,
             lotteryTypeId: lotteryType.id,
@@ -365,6 +400,7 @@ async function insertToDB(
             isComplete: true,
             crawledAt: new Date(),
             crawlSource: source,
+            specialCodes,
         },
     })
 
@@ -426,11 +462,16 @@ export async function crawlXSMB(date?: Date): Promise<CrawlResult> {
     console.log(`\n[Crawler XSMB] === Bắt đầu crawl ngày ${dateStr} ===`)
 
     // ── Bước 1: Fetch song song từ 2 nguồn chính ───────
+    let source1Html = ''
+
     const sourceConfigs = [
         {
             name: 'xoso.com.vn',
             url: `https://xoso.com.vn/xsmb-${dd}-${mm}-${yyyy}.html`,
-            parser: parseXosoComVn,
+            parser: (html: string) => {
+                source1Html = html // ← lưu lại html
+                return parseXosoComVn(html)
+            },
         },
         {
             name: 'minhngoc.net.vn',
@@ -446,6 +487,11 @@ export async function crawlXSMB(date?: Date): Promise<CrawlResult> {
             try {
                 console.log(`  → Fetching ${cfg.name}...`)
                 const html = await fetchText(cfg.url)
+                // Thêm tạm 3 dòng debug này:
+                const testCodes = parseSpecialCodes(html)
+                console.log('[DEBUG specialCodes] found:', testCodes.length, testCodes)
+                console.log('[DEBUG html snippet]', html.substring(html.indexOf('prizeCode'), html.indexOf('prizeCode') + 300))
+
                 const prizes = cfg.parser(html)
                 const { valid, reason } = validate(prizes)
 
@@ -579,8 +625,9 @@ export async function crawlXSMB(date?: Date): Promise<CrawlResult> {
     // ── Bước 4: Hai nguồn khớp → Insert vào DB ────────
     const sourceLabel = `${src1.name}+${src2.name}`
     console.log(`\n[Crawler XSMB] Bước 4: 2 nguồn khớp nhau ✅ → Insert vào DB...`)
-
-    const count = await insertToDB(mergedPrizes, targetDate, sourceLabel)
+    const specialCodes = parseSpecialCodes(source1Html)
+    console.log('[DEBUG specialCodes]', specialCodes)
+    const count = await insertToDB(mergedPrizes, targetDate, sourceLabel, specialCodes)
 
     // Ghi log success
     if (lotteryType) {

@@ -4,7 +4,7 @@ import { crawlXSMB } from '@/scripts/crawlers/xsmb'
 import { crawlXSMN } from '@/scripts/crawlers/xsmn'
 import { crawlXSMT } from '@/scripts/crawlers/xsmt'
 
-export const maxDuration = 300 // 5 phút — đủ cho 3 crawler chạy tuần tự
+export const maxDuration = 300 // 5 phút
 
 interface CrawlerRun {
     name: string
@@ -16,104 +16,55 @@ interface CrawlerRun {
 }
 
 export async function GET(request: Request) {
-    // Xác thực — chỉ Vercel Cron mới được gọi
     const authHeader = request.headers.get('authorization')
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const today = new Date()
-    const dateStr = today.toISOString().split('T')[0]
+    // Hỗ trợ ?date=2026-03-25 để test ngày cụ thể
+    // Nếu không có → dùng hôm nay (production)
+    const { searchParams } = new URL(request.url)
+    const dateParam = searchParams.get('date')
+    const targetDate = dateParam ? new Date(dateParam) : new Date()
+    const dateStr = targetDate.toISOString().split('T')[0]
+
     const results: CrawlerRun[] = []
+    console.log(`\n[Cron] === Crawl ${dateStr} ===`)
 
-    console.log(`\n[Cron All] === Bắt đầu crawl tất cả ngày ${dateStr} ===`)
-
-    // ── XSMB — chạy mỗi ngày ─────────────────────────
-    {
+    // Chạy tuần tự để tránh overload DB connection
+    for (const [name, crawlFn] of [
+        ['XSMB', () => crawlXSMB(targetDate)],
+        ['XSMN', () => crawlXSMN(targetDate)],
+        ['XSMT', () => crawlXSMT(targetDate)],
+    ] as [string, () => Promise<any>][]) {
         const t = Date.now()
         try {
-            console.log('\n[Cron All] 1/3 Crawling XSMB...')
-            const result = await crawlXSMB(today)
-            results.push({
-                name: 'XSMB',
-                ...result,
-                executionMs: Date.now() - t,
-            })
+            console.log(`\n[Cron] Crawling ${name}...`)
+            const result = await crawlFn()
+            results.push({ name, ...result, executionMs: Date.now() - t })
         } catch (err) {
             results.push({
-                name: 'XSMB',
-                success: false,
-                recordsInserted: 0,
-                source: 'error',
-                error: String(err),
-                executionMs: Date.now() - t,
+                name, success: false, recordsInserted: 0,
+                source: 'error', error: String(err), executionMs: Date.now() - t,
             })
         }
+        // Nghỉ 2 giây giữa các crawler để connection được release
+        await new Promise(r => setTimeout(r, 2000))
     }
 
-    // ── XSMN — chạy mỗi ngày (nhiều đài, mỗi đài 1 ngày/tuần) ──
-    {
-        const t = Date.now()
-        try {
-            console.log('\n[Cron All] 2/3 Crawling XSMN...')
-            const result = await crawlXSMN(today)
-            results.push({
-                name: 'XSMN',
-                ...result,
-                executionMs: Date.now() - t,
-            })
-        } catch (err) {
-            results.push({
-                name: 'XSMN',
-                success: false,
-                recordsInserted: 0,
-                source: 'error',
-                error: String(err),
-                executionMs: Date.now() - t,
-            })
-        }
-    }
+    const totalRecords = results.reduce((s, r) => s + r.recordsInserted, 0)
+    const failed = results.filter(r => !r.success)
 
-    // ── XSMT — chạy mỗi ngày (tương tự XSMN) ────────
-    {
-        const t = Date.now()
-        try {
-            console.log('\n[Cron All] 3/3 Crawling XSMT...')
-            const result = await crawlXSMT(today)
-            results.push({
-                name: 'XSMT',
-                ...result,
-                executionMs: Date.now() - t,
-            })
-        } catch (err) {
-            results.push({
-                name: 'XSMT',
-                success: false,
-                recordsInserted: 0,
-                source: 'error',
-                error: String(err),
-                executionMs: Date.now() - t,
-            })
-        }
-    }
-
-    // ── Tổng kết ──────────────────────────────────────
-    const totalSuccess = results.filter(r => r.success).length
-    const totalFailed = results.filter(r => !r.success).length
-    const totalRecords = results.reduce((sum, r) => sum + r.recordsInserted, 0)
-
-    console.log('\n[Cron All] === Kết quả ===')
-    results.forEach(r => {
-        console.log(
-            `  ${r.success ? '✅' : '❌'} ${r.name}: ${r.recordsInserted} giải — ${r.executionMs}ms`
-        )
-    })
+    console.log('\n[Cron] === Kết quả ===')
+    results.forEach(r =>
+        console.log(`  ${r.success ? '✅' : '❌'} ${r.name}: ${r.recordsInserted} records (${r.executionMs}ms)`)
+    )
 
     return NextResponse.json({
         date: dateStr,
         summary: {
-            success: totalSuccess,
-            failed: totalFailed,
+            success: results.filter(r => r.success).length,
+            failed: failed.length,
             totalRecords,
         },
         results,

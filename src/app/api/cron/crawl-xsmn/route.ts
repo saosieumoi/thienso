@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { crawlXSMN } from '@/scripts/crawlers/xsmn' // sẽ tạo sau
+import { crawlXSMN } from '@/scripts/crawlers/xsmn'
 
 export const maxDuration = 60
 

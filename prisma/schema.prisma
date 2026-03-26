@@ -1,5 +1,3 @@
-// prisma/schema.prisma
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,197 +8,116 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// ─────────────────────────────────────────
-// ENUM — Dùng cho prize_name, tránh typo
-// ─────────────────────────────────────────
-
-enum PrizeName {
-  DB    // Giải đặc biệt
-  G1    // Giải nhất
-  G2    // Giải nhì
-  G3    // Giải ba
-  G4    // Giải tư
-  G5    // Giải năm
-  G6    // Giải sáu
-  G7    // Giải bảy
-  // Vietlott
-  JP1   // Jackpot 1 (Power)
-  JP2   // Jackpot 2 (Power)
-  VL1   // Giải nhất Mega/Max3D
-  VL2   // Giải nhì
-  VL3   // Giải ba
-  VL4   // Giải tư
-  VL5   // Giải năm
-  KENO  // Keno result set
-}
-
-enum LotteryRegion {
-  MIEN_BAC   // Miền Bắc
-  MIEN_NAM   // Miền Nam
-  MIEN_TRUNG // Miền Trung
-  VIETLOTT   // Vietlott (không chia miền)
-}
-
-enum LotteryCategory {
-  XSKT     // Xổ số kiến thiết (3 miền)
-  MEGA645  // Vietlott Mega 6/45
-  POWER655 // Vietlott Power 6/55
-  MAX3D    // Vietlott Max 3D
-  MAX3DPRO // Vietlott Max 3D Pro
-  KENO     // Vietlott Keno
-}
-
-// ─────────────────────────────────────────
-// BẢNG 1: LotteryType — Danh mục các loại xổ số
-// ─────────────────────────────────────────
-
 model LotteryType {
-  id          String          @id @default(cuid())
-  code        String          @unique // "XSMB", "XSMN", "XSMT", "MEGA645"...
-  name        String          // Tên hiển thị đầy đủ
-  shortName   String          // Tên ngắn: "MB", "MN", "MT"
-  category    LotteryCategory
-  region      LotteryRegion
-  drawDays    Int[]           // 0=CN, 1=T2...6=T7. Rỗng = hàng ngày
-  drawTime    String          // "18:15", "16:30"...
-  isActive    Boolean         @default(true)
-  sortOrder   Int             @default(0)
-
-  provinces   Province[]
-  draws       Draw[]
-
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  id        String          @id @default(cuid())
+  code      String          @unique
+  name      String
+  shortName String
+  category  LotteryCategory
+  region    LotteryRegion
+  drawDays  Int[]
+  drawTime  String
+  isActive  Boolean         @default(true)
+  sortOrder Int             @default(0)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  draws     Draw[]
+  provinces Province[]
 
   @@map("lottery_types")
 }
 
-// ─────────────────────────────────────────
-// BẢNG 2: Province — 63 tỉnh thành + Vietlott
-// ─────────────────────────────────────────
-
 model Province {
-  id            String       @id @default(cuid())
-  code          String       @unique // "HN", "HCM", "TPHCM", "MEGA"...
-  name          String       // "Hà Nội", "TP. Hồ Chí Minh"
-  shortName     String       // "HN", "HCM"
+  id            String        @id @default(cuid())
+  code          String        @unique
+  name          String
+  shortName     String
   region        LotteryRegion
   lotteryTypeId String
-  lotteryType   LotteryType  @relation(fields: [lotteryTypeId], references: [id])
-  drawDayOfWeek Int?         // Ngày quay của tỉnh này (0–6). Null = theo LotteryType
-  isActive      Boolean      @default(true)
-  sortOrder     Int          @default(0)
-
+  drawDayOfWeek Int?
+  isActive      Boolean       @default(true)
+  sortOrder     Int           @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   draws         Draw[]
-
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  lotteryType   LotteryType   @relation(fields: [lotteryTypeId], references: [id])
 
   @@index([lotteryTypeId])
   @@index([region])
   @@map("provinces")
 }
 
-// ─────────────────────────────────────────
-// BẢNG 3: Draw — Mỗi kỳ quay
-// ─────────────────────────────────────────
-
 model Draw {
-  id              String       @id @default(cuid())
-  drawDate        DateTime     // Ngày quay (date only, không có giờ)
-  drawNumber      Int?         // Số kỳ (VD: kỳ #84203 của XSMB)
-  lotteryTypeId   String
-  lotteryType     LotteryType  @relation(fields: [lotteryTypeId], references: [id])
-  provinceId      String?      // Null với XSMB (chỉ có 1 đài)
-  province        Province?    @relation(fields: [provinceId], references: [id])
+  id            String      @id @default(cuid())
+  drawDate      DateTime
+  drawNumber    Int?
+  lotteryTypeId String
+  provinceId    String?
+  isComplete    Boolean     @default(false)
+  crawledAt     DateTime?
+  crawlSource   String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  lotteryType   LotteryType @relation(fields: [lotteryTypeId], references: [id])
+  province      Province?   @relation(fields: [provinceId], references: [id])
 
-  // Metadata
-  isComplete      Boolean      @default(false) // false khi đang quay live
-  crawledAt       DateTime?    // Thời điểm crawler lấy được data
-  crawlSource     String?      // "minhngoc", "xoso.com.vn", "vietlott.vn"
+  specialCodes    String[]
 
-  results         Result[]
-  lotoResults     LotoResult[]
+  lotoResults   LotoResult?
+  results       Result[]
 
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-
-  // Mỗi tỉnh chỉ có 1 kết quả mỗi ngày
   @@unique([drawDate, lotteryTypeId, provinceId])
   @@index([drawDate])
   @@index([lotteryTypeId])
   @@index([lotteryTypeId, drawDate])
-  @@index([drawDate, lotteryTypeId]) // Cho query "KQXS hôm nay"
+  @@index([drawDate, lotteryTypeId])
   @@map("draws")
 }
 
-// ─────────────────────────────────────────
-// BẢNG 4: Result — Kết quả từng giải
-// ─────────────────────────────────────────
-
 model Result {
-  id          String     @id @default(cuid())
-  drawId      String
-  draw        Draw       @relation(fields: [drawId], references: [id], onDelete: Cascade)
-  prizeName   PrizeName
-  numbers     String[]   // Mảng số: ["82736"] cho ĐB, ["47291", "83746"] cho G2
-  // Tiện ích tính toán
-  headNums    Int[]      // Đầu số (2 chữ số đầu của mỗi số)
-  tailNums    Int[]      // Đuôi số (2 chữ số cuối) — dùng cho lô đề
-
-  createdAt   DateTime   @default(now())
+  id        String    @id @default(cuid())
+  drawId    String
+  prizeName PrizeName
+  numbers   String[]
+  headNums  Int[]
+  tailNums  Int[]
+  createdAt DateTime  @default(now())
+  draw      Draw      @relation(fields: [drawId], references: [id], onDelete: Cascade)
 
   @@index([drawId])
   @@index([drawId, prizeName])
-  @@index([tailNums]) // Quan trọng: query thống kê lô đề theo đuôi số
+  @@index([tailNums])
   @@map("results")
 }
 
-// ─────────────────────────────────────────
-// BẢNG 5: LotoResult — Bảng lô tô (xếp theo đầu số)
-// Tách riêng vì query pattern khác Result
-// ─────────────────────────────────────────
-
 model LotoResult {
-  id       String   @id @default(cuid())
-  drawId   String
-  draw     Draw     @relation(fields: [drawId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  drawId       String   @unique
+  head0        Int[]
+  head1        Int[]
+  head2        Int[]
+  head3        Int[]
+  head4        Int[]
+  head5        Int[]
+  head6        Int[]
+  head7        Int[]
+  head8        Int[]
+  head9        Int[]
+  allTwoDigits Int[]
+  createdAt    DateTime @default(now())
+  draw         Draw     @relation(fields: [drawId], references: [id], onDelete: Cascade)
 
-  // 10 đầu số 0x–9x, mỗi đầu chứa mảng đuôi
-  // VD: head0 = [36, 72] nghĩa là số 036, 072 xuất hiện trong kỳ này
-  head0    Int[]
-  head1    Int[]
-  head2    Int[]
-  head3    Int[]
-  head4    Int[]
-  head5    Int[]
-  head6    Int[]
-  head7    Int[]
-  head8    Int[]
-  head9    Int[]
-
-  // Tất cả 2-số xuất hiện (đuôi của toàn bộ giải) — dùng cho lô đề
-  allTwoDigits  Int[]
-
-  createdAt DateTime @default(now())
-
-  @@unique([drawId])
   @@index([drawId])
   @@map("loto_results")
 }
 
-// ─────────────────────────────────────────
-// BẢNG 6: StatCache — Cache thống kê tần suất
-// Tính toán sẵn, không tính lại mỗi request
-// ─────────────────────────────────────────
-
 model StatCache {
-  id              String   @id @default(cuid())
-  lotteryTypeId   String
-  statType        String   // "frequency_30d", "frequency_90d", "lo_gan", "pairs"
-  data            Json     // Kết quả thống kê dạng JSON
-  computedAt      DateTime @default(now())
-  validUntil      DateTime // Expire time — recompute sau kỳ quay mới
+  id            String   @id @default(cuid())
+  lotteryTypeId String
+  statType      String
+  data          Json
+  computedAt    DateTime @default(now())
+  validUntil    DateTime
 
   @@unique([lotteryTypeId, statType])
   @@index([lotteryTypeId])
@@ -208,24 +125,54 @@ model StatCache {
   @@map("stat_cache")
 }
 
-// ─────────────────────────────────────────
-// BẢNG 7: CrawlLog — Lịch sử crawler
-// Dùng để debug và alert khi fail
-// ─────────────────────────────────────────
-
 model CrawlLog {
   id              String   @id @default(cuid())
   lotteryTypeId   String
   targetDate      DateTime
-  source          String   // "minhngoc", "xoso.com.vn", "vietlott.vn"
-  status          String   // "success", "failed", "partial"
+  source          String
+  status          String
   recordsInserted Int      @default(0)
   errorMessage    String?
-  executionMs     Int?     // Thời gian chạy (milliseconds)
+  executionMs     Int?
   createdAt       DateTime @default(now())
 
   @@index([lotteryTypeId])
   @@index([createdAt])
   @@index([status])
   @@map("crawl_logs")
+}
+
+enum PrizeName {
+  DB
+  G1
+  G2
+  G3
+  G4
+  G5
+  G6
+  G7
+  JP1
+  JP2
+  VL1
+  VL2
+  VL3
+  VL4
+  VL5
+  KENO
+}
+
+enum LotteryRegion {
+  MIEN_BAC
+  MIEN_NAM
+  MIEN_TRUNG
+  VIETLOTT
+}
+
+enum LotteryCategory {
+  XSKT
+  MEGA645
+  POWER655
+  MAX3D
+  MAX3DPRO
+  KENO
 }
