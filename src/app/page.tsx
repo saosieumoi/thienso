@@ -8,67 +8,94 @@ export const metadata: Metadata = {
   description: 'Kết quả xổ số Miền Bắc, Miền Nam, Miền Trung và Vietlott nhanh nhất. Cập nhật ngay sau kỳ quay.',
 }
 
-// Prevent build-time pre-rendering to avoid DB connection pool exhaustion
-export const dynamic = 'force-dynamic'
-export const revalidate = 60
+// ISR — cache page in 5 minutes to reduce DB load
+// On Vercel, ISR works properly with serverless functions
+export const revalidate = 300
 
 // ── Data fetchers ───────────────────────────────────
 // CRITICAL: Do NOT use Promise.all with connection_limit=1 on Supabase.
 // All queries must run SEQUENTIALLY to avoid connection pool timeout.
+// Simplified queries for fast response — only fetch what's needed for the card display.
 async function getHomeData() {
-  // XSMB latest
-  const xsmb = await prisma.draw.findFirst({
-    where: { lotteryType: { code: 'XSMB' }, isComplete: true },
-    orderBy: { drawDate: 'desc' },
-    include: {
-      results: { orderBy: { prizeName: 'asc' } },
-      lotoResults: true,
-    },
-  })
+  try {
+    // XSMB latest — chỉ lấy drawDate + giải ĐB (không lấy lotoResults nặng)
+    const xsmb = await prisma.draw.findFirst({
+      where: { lotteryType: { code: 'XSMB' }, isComplete: true },
+      orderBy: { drawDate: 'desc' },
+      select: {
+        id: true,
+        drawDate: true,
+        results: {
+          where: { prizeName: 'DB' },
+          select: { prizeName: true, numbers: true },
+        },
+        // Không include lotoResults — quá nặng cho trang home
+      },
+    })
 
-  // XSMN latest (all provinces)
-  const xsmn = await prisma.draw.findMany({
-    where: { lotteryType: { code: 'XSMN' }, isComplete: true },
-    orderBy: { drawDate: 'desc' },
-    take: 3,
-    include: {
-      results: { where: { prizeName: 'DB' } },
-      province: true,
-    },
-  })
+    // XSMN latest (all provinces) — chỉ lấy DB
+    const xsmn = await prisma.draw.findMany({
+      where: { lotteryType: { code: 'XSMN' }, isComplete: true },
+      orderBy: { drawDate: 'desc' },
+      take: 3,
+      select: {
+        id: true,
+        drawDate: true,
+        results: { where: { prizeName: 'DB' }, select: { prizeName: true, numbers: true } },
+        province: { select: { name: true, shortName: true } },
+      },
+    })
 
-  // XSMT latest (all provinces)
-  const xsmt = await prisma.draw.findMany({
-    where: { lotteryType: { code: 'XSMT' }, isComplete: true },
-    orderBy: { drawDate: 'desc' },
-    take: 3,
-    include: {
-      results: { where: { prizeName: 'DB' } },
-      province: true,
-    },
-  })
+    // XSMT latest (all provinces)
+    const xsmt = await prisma.draw.findMany({
+      where: { lotteryType: { code: 'XSMT' }, isComplete: true },
+      orderBy: { drawDate: 'desc' },
+      take: 3,
+      select: {
+        id: true,
+        drawDate: true,
+        results: { where: { prizeName: 'DB' }, select: { prizeName: true, numbers: true } },
+        province: { select: { name: true, shortName: true } },
+      },
+    })
 
-  // Mega 6/45 latest
-  const mega = await prisma.draw.findFirst({
-    where: { lotteryType: { code: 'MEGA645' }, isComplete: true },
-    orderBy: { drawDate: 'desc' },
-    include: {
-      results: { where: { prizeName: 'VL1' } },
-      vietlottPrizes: { where: { name: { contains: 'Jackpot 1', mode: 'insensitive' } } },
-    },
-  })
+    // Mega 6/45 latest
+    const mega = await prisma.draw.findFirst({
+      where: { lotteryType: { code: 'MEGA645' }, isComplete: true },
+      orderBy: { drawDate: 'desc' },
+      select: {
+        id: true,
+        drawDate: true,
+        drawNumber: true,
+        results: { where: { prizeName: 'VL1' }, select: { prizeName: true, numbers: true } },
+        vietlottPrizes: {
+          where: { name: { contains: 'Jackpot 1', mode: 'insensitive' } },
+          select: { value: true },
+        },
+      },
+    })
 
-  // Power 6/55 latest
-  const power = await prisma.draw.findFirst({
-    where: { lotteryType: { code: 'POWER655' }, isComplete: true },
-    orderBy: { drawDate: 'desc' },
-    include: {
-      results: { where: { prizeName: 'JP1' } },
-      vietlottPrizes: { where: { name: { contains: 'Jackpot 1', mode: 'insensitive' } } },
-    },
-  })
+    // Power 6/55 latest
+    const power = await prisma.draw.findFirst({
+      where: { lotteryType: { code: 'POWER655' }, isComplete: true },
+      orderBy: { drawDate: 'desc' },
+      select: {
+        id: true,
+        drawDate: true,
+        drawNumber: true,
+        results: { where: { prizeName: 'JP1' }, select: { prizeName: true, numbers: true } },
+        vietlottPrizes: {
+          where: { name: { contains: 'Jackpot 1', mode: 'insensitive' } },
+          select: { value: true },
+        },
+      },
+    })
 
-  return { xsmb, xsmn, xsmt, mega, power }
+    return { xsmb, xsmn, xsmt, mega, power }
+  } catch (error) {
+    console.error('[HomePage] DB error:', error)
+    return { xsmb: null, xsmn: [], xsmt: [], mega: null, power: null }
+  }
 }
 
 function formatDate(d: Date | string, opts?: Intl.DateTimeFormatOptions) {
