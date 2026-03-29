@@ -4,8 +4,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import SideColumn from '@/components/SideColumn'
 
-export const dynamic = 'force-static'
-export const revalidate = 300 // 5 minutes
+export const dynamic = 'force-dynamic'
 
 const PRIZE_ORDER = ['DB', 'G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7']
 const PRIZE_LABEL: Record<string, string> = {

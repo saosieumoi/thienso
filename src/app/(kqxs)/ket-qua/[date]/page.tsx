@@ -6,8 +6,7 @@ import Link from 'next/link'
 import SideColumn from '@/components/SideColumn'
 
 // On-demand rendering — pages are generated on first request and cached via ISR
-export const dynamic = 'force-static'
-export const revalidate = 2592000 // 30 days
+export const dynamic = 'force-dynamic'
 
 const PRIZE_ORDER = ['DB', 'G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7']
 const PRIZE_LABEL: Record<string, string> = {

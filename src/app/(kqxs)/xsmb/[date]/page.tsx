@@ -11,12 +11,12 @@ import SideColumn from '@/components/SideColumn'
 // cũng query DB, tạo ra nhiều concurrent connections.
 //
 // Thay vào đó:
-//   - dynamic = 'force-static': page được tạo ON-DEMAND khi có request đầu tiên
-//   - revalidate = 2592000: cache trong 30 ngày
+//   - dynamic = 'force-dynamic': ngăn prerender tại build time
+//   - revalidate = 86400: cache trong 24 giờ
 //   - Sau khi crawl xong → gọi revalidatePath('/xsmb/[date]') để cập nhật
 //   - Googlebot sẽ trigger generation khi crawl → vẫn có SEO
-export const dynamic = 'force-static'
-export const revalidate = 2592000 // 30 days
+export const dynamic = 'force-dynamic'
+export const revalidate = 86400 // 24 hours
 
 const PRIZE_ORDER = ['DB', 'G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7']
 const PRIZE_LABEL: Record<string, string> = {
