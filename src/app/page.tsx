@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: 'Kết quả xổ số Miền Bắc, Miền Nam, Miền Trung và Vietlott nhanh nhất. Cập nhật ngay sau kỳ quay.',
 }
 
+// Prevent build-time pre-rendering to avoid DB connection pool exhaustion
+export const dynamic = 'force-dynamic'
 export const revalidate = 60
 
 // ── Data fetchers ───────────────────────────────────

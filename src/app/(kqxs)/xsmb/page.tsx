@@ -3,6 +3,9 @@ import { prisma } from '@/lib/prisma'
 import type { Metadata } from 'next'
 import SideColumn from '@/components/SideColumn'
 
+// Prevent build-time pre-rendering to avoid DB connection pool exhaustion
+// (connection_limit=1 on Supabase cannot handle concurrent Prisma queries at build time)
+export const dynamic = 'force-dynamic'
 export const revalidate = 60
 
 // ── Helpers ───────────────────────────────────────────
