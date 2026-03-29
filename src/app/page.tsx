@@ -11,9 +11,6 @@ export const metadata: Metadata = {
   description: 'Kết quả xổ số Miền Bắc, Miền Nam, Miền Trung và Vietlott nhanh nhất. Cập nhật ngay sau mỗi kỳ quay.',
 }
 
-// ISR — cache page in 5 minutes to reduce DB load
-export const revalidate = 300
-
 // ── Helpers ───────────────────────────────────────
 function formatDate(d: Date | string, opts?: Intl.DateTimeFormatOptions) {
   return new Date(d).toLocaleDateString('vi-VN', opts)
