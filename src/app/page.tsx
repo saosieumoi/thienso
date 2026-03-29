@@ -3,6 +3,9 @@ import { prisma } from '@/lib/prisma'
 import type { Metadata } from 'next'
 import SideColumn from '@/components/SideColumn'
 
+// Prevent build-time pre-rendering to avoid DB connection pool exhaustion
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Thiên Số — Kết quả xổ số Việt Nam',
   description: 'Kết quả xổ số Miền Bắc, Miền Nam, Miền Trung và Vietlott nhanh nhất. Cập nhật ngay sau mỗi kỳ quay.',
