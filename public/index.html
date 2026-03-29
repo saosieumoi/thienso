@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thiên Số - Cổng thông tin Xổ số</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./styles/main.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="tb-logo">
+            <svg class="tb-logo-mark" viewBox="0 0 28 28">
+                <g transform="translate(14,14)">
+                    <polygon
+                        points="0,-11 1.5,-4.5 6,-8 3,-2.5 11,0 4.5,1.5 8,6 2.5,3 0,11 -1.5,4.5 -6,8 -3,2.5 -11,0 -4.5,-1.5 -8,-6 -2.5,-3"
+                        fill="none" stroke="#FCD34D" stroke-width=".7" stroke-linejoin="round" />
+                    <polygon points="0,-5 3.5,0 0,5 -3.5,0" fill="none" stroke="#FCD34D" stroke-width="1" />
+                    <circle cx="0" cy="0" r="1.5" fill="#FFFFFF" />
+                </g>
+            </svg>
+            <a href="#" class="tb-logo-name">Thiên Số</a>
+        </div>
+        <nav class="tb-nav">
+            <div class="nav-item has-dropdown">
+                <a href="kqxs.html?loai=xsmb" class="tb-link">XSMB</a>
+                <div class="nav-dropdown"><a href="kqxs.html?loai=xsmb&thu=2">Thứ 2 (Hà Nội)</a><a
+                        href="kqxs.html?loai=xsmb&thu=3">Thứ 3 (Quảng Ninh)</a><a href="kqxs.html?loai=xsmb&thu=4">Thứ 4
+                        (Bắc Ninh)</a><a href="kqxs.html?loai=xsmb&thu=5">Thứ 5 (Hà Nội)</a><a
+                        href="kqxs.html?loai=xsmb&thu=6">Thứ 6 (Hải Phòng)</a><a href="kqxs.html?loai=xsmb&thu=7">Thứ 7
+                        (Nam Định)</a><a href="kqxs.html?loai=xsmb&thu=cn">Chủ nhật (Thái Bình)</a></div>
+            </div>
+            <div class="nav-item has-dropdown">
+                <a href="kqxs.html?loai=xsmn" class="tb-link">XSMN</a>
+                <div class="nav-dropdown"><a href="kqxs.html?loai=xsmn">Thứ 2 (TP.HCM, ĐT, CM)</a><a href="#">Thứ 3 (BT,
+                        VT, BL)</a><a href="#">Thứ 4 (ĐN, CT, ST)</a><a href="#">Thứ 5 (TN, AG, BTh)</a><a href="#">Thứ
+                        6 (VL, BD,
+                        TV)</a><a href="#">Thứ 7 (TP.HCM, LA, BP, HG)</a><a href="#">Chủ nhật (TG, KG, ĐL)</a></div>
+            </div>
+            <div class="nav-item has-dropdown">
+                <a href="kqxs.html?loai=xsmt" class="tb-link">XSMT</a>
+                <div class="nav-dropdown"><a href="#">Thứ 2 (PY, TTH)</a><a href="#">Thứ 3 (ĐL, QN)</a><a href="#">Thứ 4
+                        (ĐN, KH)</a><a href="#">Thứ 5 (BĐ, QT, QB)</a><a href="#">Thứ 6 (GL, NT)</a><a href="#">Thứ 7
+                        (ĐN, QNg, ĐN)</a><a href="#">Chủ nhật (KH, KT)</a></div>
+            </div>
+            <div class="nav-item has-dropdown">
+                <a href="kqxs.html?loai=vietlott" class="tb-link">VIETLOTT</a>
+                <div class="nav-dropdown"><a href="#">Mega 6/45</a><a href="#">Power 6/55</a><a href="#">Max 3D</a><a
+                        href="#">Keno</a></div>
+            </div>
+            <a href="#thong-ke" class="tb-link">THỐNG KÊ</a>
+            <a href="#do-ve" class="tb-link">DÒ VÉ</a>
+            <a href="#goi-y" class="tb-link">DÃY SỐ MAY MẮN</a>
+        </nav>
+        <div class="tb-right">
+            <a href="#" class="tb-login">Đăng nhập</a>
+            <button class="tb-cta">Bắt đầu miễn phí</button>
+        </div>
+    </header>
+    <div class="action-strip">
+        <a href="#kqxs" class="action-btn ab-primary"><span class="ab-icon">📋</span>Xem kết quả hôm nay</a>
+        <a href="#do-ve" class="action-btn ab-secondary"><span class="ab-icon">🔍</span>Dò vé nhanh</a>
+        <a href="#goi-y" class="action-btn ab-accent"><span class="ab-icon">✨</span>Nhận gợi ý số miễn phí</a>
+    </div>
+    <div class="responsible-strip"><span>✓</span> Thiên Số cung cấp thống kê dữ liệu lịch sử — Dữ liệu chỉ hỗ trợ quyết
+        định, giúp lựa chọn của bạn có cơ sở hơn.</div>
+    <div class="page-body">
+        <!-- ── KẾT QUẢ XỔ SỐ + SIDE COLUMN ── -->
+        <div class="xsmb-layout" id="kqxs">
+            <div class="xsmb-section">
+
+                <!-- ── HEADER: Tiêu đề + Chọn ngày ── -->
+                <div class="xsmb-header">
+                    <div class="xsmb-header-top">
+                        <div class="xsmb-title-block">
+                            <h2 class="xsmb-title">Kết quả Xổ số — <span id="idx-day-label">Thứ Hai 23/03/2026</span>
+                            </h2>
+                            <div class="xsmb-meta">
+                                <span class="xsmb-meta-item"><span class="xsmb-dot green"></span>Cập nhật lúc
+                                    18:46</span>
+                                <span class="xsmb-meta-item">XSMN · XSMB · XSMT</span>
+                            </div>
+                        </div>
+                        <div class="xsmb-live-badge">
+                            <div class="live-dot"></div>Trực tiếp
+                        </div>
+                    </div>
+                    <div class="xsmb-day-nav" id="idx-day-nav">
+                        <button class="day-btn active" data-day="2" data-date="23/03">Thứ
+                            2<br><span>23/03</span></button>
+                        <button class="day-btn" data-day="3" data-date="22/03">CN<br><span>22/03</span></button>
+                        <button class="day-btn" data-day="4" data-date="21/03">Thứ 7<br><span>21/03</span></button>
+                        <button class="day-btn" data-day="5" data-date="20/03">Thứ 6<br><span>20/03</span></button>
+                        <button class="day-btn" data-day="6" data-date="19/03">Thứ 5<br><span>19/03</span></button>
+                        <button class="day-btn" data-day="7" data-date="18/03">Thứ 4<br><span>18/03</span></button>
+                        <button class="day-btn" data-day="CN" data-date="17/03">Thứ 3<br><span>17/03</span></button>
+                    </div>
+                </div>
+
+                <div class="kq-section kq-section-south" id="kqxs-south">
+                    <div class="kq-tabs" style="margin-top:0">
+                        <div class="kq-tab active" data-tab="xskt">XSMN · XSMB · XSMT</div>
+                        <div class="kq-tab" data-tab="vietlott">Vietlott</div>
+                    </div>
+                    <div class="kq-body" style="padding: 12px; background: #FFF;">
+                        <div id="content-xskt">
+                            <!-- XSMN MULTI-STATION SECTION -->
+                            <div class="kq-multi-container">
+                                <div class="classic-board multi-board">
+                                    <div class="board-header">
+                                        <h3 class="board-title">XỔ SỐ MIỀN NAM</h3>
+                                        <div class="board-date">Thứ Hai - Ngày 23/03/2026</div>
+                                    </div>
+                                    <div class="xsmn-grid" id="idx-xsmn-grid">
+                                        <div class="xsmn-header-row">
+                                            <div class="xsmn-hl">Giải</div>
+                                            <div class="xsmn-hc">TP. HCM</div>
+                                            <div class="xsmn-hc">Đồng Tháp</div>
+                                            <div class="xsmn-hc">Cà Mau</div>
+                                        </div>
+                                        <div class="xsmn-row">
+                                            <div class="xsmn-lbl">G8</div>
+                                            <div class="xsmn-cell"><span class="number mn-num" data-tail="42">42</span>
+                                            </div>
+                                            <div class="xsmn-cell"><span class="number mn-num" data-tail="15">15</span>
+                                            </div>
+                                            <div class="xsmn-cell"><span class="number mn-num" data-tail="88">88</span>
+                                            </div>
+                                        </div>
+                                        <div class="xsmn-row">
+                                            <div class="xsmn-lbl">G7</div>
+                                            <div class="xsmn-cell"><span class="number mn-num" data-tail="06">506</span>
+                                            </div>
+                                            <div class="xsmn-cell"><span class="number mn-num" data-tail="29">129</span>
+                                            </div>
+                                            <div class="xsmn-cell"><span class="number mn-num" data-tail="72">872</span>
+                                            </div>
+                                        </div>
+                                        <div class="xsmn-row">
+                                            <div class="xsmn-lbl">G6</div>
+                                            <div class="xsmn-cell"><span class="number mn-num"
+                                                    data-tail="11">5611</span><br><span class="number mn-num"
+                                                    data-tail="53">9253</span><br><span class="number mn-num"
+                                                    data-tail="94">1094</span></div>
+                                            <div class="xsmn-cell"><span class="number mn-num"
+                                                    data-tail="81">0381</span><br><span class="number mn-num"
+                                                    data-tail="12">2912</span><br><span class="number mn-num"
+                                                    data-tail="66">7466</span></div>
+                                            <div class="xsmn-cell"><span class="number mn-num"
+                                                    data-tail="21">1821</span><br><span class="number mn-num"
+                                                    data-tail="08">4108</span><br><span class="number mn-num"
+                                                    data-tail="42">9842</span></div>
+                                        </div>
+                                        <div class="xsmn-row">
+                                            <div class="xsmn-lbl">G5</div>
+                                            <div class="xsmn-cell"><span class="number mn-num"
+                                                    data-tail="99">4099</span></div>
+                                            <div class="xsmn-cell"><span class="number mn-num"
+                                                    data-tail="01">8201</span></div>
+                                            <div class="xsmn-cell"><span class="number mn-num"
+                                                    data-tail="33">5133</span></div>
+                                        </div>
+                                        <div class="xsmn-row special-row">
+                                            <div class="xsmn-lbl">ĐB</div>
+                                            <div class="xsmn-cell"><span class="number mn-num special"
+                                                    data-tail="84">192284</span></div>
+                                            <div class="xsmn-cell"><span class="number mn-num special"
+                                                    data-tail="15">472915</span></div>
+                                            <div class="xsmn-cell"><span class="number mn-num special"
+                                                    data-tail="72">837472</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="control-panel kq-filter-bar">
+                                        <div class="filter-primary-row">
+                                            <span class="filter-label">Hiển thị:</span>
+                                            <form class="digits-form">
+                                                <label class="radio" data-value="0"><input type="radio"
+                                                        name="showed-digits-mn" value="0" checked> <b></b><span>Đầy
+                                                        đủ</span></label>
+                                                <label class="radio" data-value="2"><input type="radio"
+                                                        name="showed-digits-mn" value="2"> <b></b><span>2
+                                                        số</span></label>
+                                                <label class="radio" data-value="3"><input type="radio"
+                                                        name="showed-digits-mn" value="3"> <b></b><span>3
+                                                        số</span></label>
+                                            </form>
+                                        </div>
+                                        <!-- Quick Digit Filter -->
+                                        <div class="digit-filter-row">
+                                            <span class="digit-label">Tìm số chứa:</span>
+                                            <div class="digit-list">
+                                                <div class="digit-item" data-digit="0">0</div>
+                                                <div class="digit-item" data-digit="1">1</div>
+                                                <div class="digit-item" data-digit="2">2</div>
+                                                <div class="digit-item" data-digit="3">3</div>
+                                                <div class="digit-item" data-digit="4">4</div>
+                                                <div class="digit-item" data-digit="5">5</div>
+                                                <div class="digit-item" data-digit="6">6</div>
+                                                <div class="digit-item" data-digit="7">7</div>
+                                                <div class="digit-item" data-digit="8">8</div>
+                                                <div class="digit-item" data-digit="9">9</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="loto-board xsmn-loto">
+                                    <div class="loto-header">Đầu · Đuôi Lô Tô</div>
+                                    <div class="xsmn-grid loto-cols">
+                                        <div class="xsmn-header-row">
+                                            <div class="xsmn-hl">Đầu</div>
+                                            <div class="xsmn-hc">TP. HCM</div>
+                                            <div class="xsmn-hc">Đồng Tháp</div>
+                                            <div class="xsmn-hc">Cà Mau</div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="0">
+                                            <div class="lt-head">0</div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails">06, 08</div>
+                                            <div class="xsmn-cell tails">01</div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="1">
+                                            <div class="lt-head">1</div>
+                                            <div class="xsmn-cell tails">11, 15</div>
+                                            <div class="xsmn-cell tails">12, 15</div>
+                                            <div class="xsmn-cell tails"></div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="2">
+                                            <div class="lt-head">2</div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails">29</div>
+                                            <div class="xsmn-cell tails">21</div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="3">
+                                            <div class="lt-head">3</div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails">33</div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="4">
+                                            <div class="lt-head">4</div>
+                                            <div class="xsmn-cell tails">42</div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails">42</div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="5">
+                                            <div class="lt-head">5</div>
+                                            <div class="xsmn-cell tails">53</div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails"></div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="6">
+                                            <div class="lt-head">6</div>
+                                            <div class="xsmn-cell tails">62</div>
+                                            <div class="xsmn-cell tails">66</div>
+                                            <div class="xsmn-cell tails"></div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="7">
+                                            <div class="lt-head">7</div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails">72</div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="8">
+                                            <div class="lt-head">8</div>
+                                            <div class="xsmn-cell tails">84</div>
+                                            <div class="xsmn-cell tails">81</div>
+                                            <div class="xsmn-cell tails">88</div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="9">
+                                            <div class="lt-head">9</div>
+                                            <div class="xsmn-cell tails">94, 99</div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End kq-multi-container XSMN -->
+
+                        <div class="kq-classic-container">
+                            <div class="classic-board">
+                                <div class="board-header">
+                                    <h3 class="board-title">XỔ SỐ MIỀN BẮC</h3>
+                                    <div class="board-date" id="idx-mb-board-date">Thứ Hai - Ngày 23/03/2026</div>
+                                </div>
+                                <div class="board-body" id="idx-mb-board-body">
+                                    <div class="prize-row prize-special">
+                                        <div class="prize-label">Đặc biệt</div>
+                                        <div class="prize-numbers"><span class="number special"
+                                                data-tail="84">19284</span>
+                                        </div>
+                                    </div>
+                                    <div class="prize-row">
+                                        <div class="prize-label">Giải nhất</div>
+                                        <div class="prize-numbers"><span class="number" data-tail="91">47291</span>
+                                        </div>
+                                    </div>
+                                    <div class="prize-row">
+                                        <div class="prize-label">Giải nhì</div>
+                                        <div class="prize-numbers grid-2"><span class="number"
+                                                data-tail="46">83746</span><span class="number"
+                                                data-tail="23">91823</span>
+                                        </div>
+                                    </div>
+                                    <div class="prize-row">
+                                        <div class="prize-label">Giải ba</div>
+                                        <div class="prize-numbers grid-3"><span class="number"
+                                                data-tail="12">18212</span><span class="number"
+                                                data-tail="44">89344</span><span class="number"
+                                                data-tail="08">41208</span><span class="number"
+                                                data-tail="84">90184</span><span class="number"
+                                                data-tail="67">72867</span><span class="number"
+                                                data-tail="19">10319</span>
+                                        </div>
+                                    </div>
+                                    <div class="prize-row">
+                                        <div class="prize-label">Giải tư</div>
+                                        <div class="prize-numbers grid-4"><span class="number"
+                                                data-tail="15">8315</span><span class="number"
+                                                data-tail="88">7188</span><span class="number"
+                                                data-tail="06">4506</span><span class="number"
+                                                data-tail="29">9129</span>
+                                        </div>
+                                    </div>
+                                    <div class="prize-row">
+                                        <div class="prize-label">Giải năm</div>
+                                        <div class="prize-numbers grid-3"><span class="number"
+                                                data-tail="42">8242</span><span class="number"
+                                                data-tail="00">9100</span><span class="number"
+                                                data-tail="72">1872</span><span class="number"
+                                                data-tail="11">5611</span><span class="number"
+                                                data-tail="53">9253</span><span class="number"
+                                                data-tail="94">1094</span>
+                                        </div>
+                                    </div>
+                                    <div class="prize-row">
+                                        <div class="prize-label">Giải sáu</div>
+                                        <div class="prize-numbers grid-3"><span class="number"
+                                                data-tail="81">381</span><span class="number"
+                                                data-tail="12">912</span><span class="number" data-tail="66">466</span>
+                                        </div>
+                                    </div>
+                                    <div class="prize-row" style="border-bottom:none;">
+                                        <div class="prize-label">Giải bảy</div>
+                                        <div class="prize-numbers grid-4"><span class="number"
+                                                data-tail="21">21</span><span class="number"
+                                                data-tail="08">08</span><span class="number"
+                                                data-tail="42">42</span><span class="number" data-tail="99">99</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="control-panel kq-filter-bar">
+                                    <div class="filter-primary-row">
+                                        <span class="filter-label">Hiển thị:</span>
+                                        <form class="digits-form">
+                                            <label class="radio" data-value="0"><input type="radio"
+                                                    name="showed-digits-mb" value="0" checked> <b></b><span>Đầy
+                                                    đủ</span></label>
+                                            <label class="radio" data-value="2"><input type="radio"
+                                                    name="showed-digits-mb" value="2"> <b></b><span>2 số</span></label>
+                                            <label class="radio" data-value="3"><input type="radio"
+                                                    name="showed-digits-mb" value="3"> <b></b><span>3 số</span></label>
+                                        </form>
+                                    </div>
+                                    <!-- Quick Digit Filter -->
+                                    <div class="digit-filter-row">
+                                        <span class="digit-label">Tìm số chứa:</span>
+                                        <div class="digit-list">
+                                            <div class="digit-item" data-digit="0">0</div>
+                                            <div class="digit-item" data-digit="1">1</div>
+                                            <div class="digit-item" data-digit="2">2</div>
+                                            <div class="digit-item" data-digit="3">3</div>
+                                            <div class="digit-item" data-digit="4">4</div>
+                                            <div class="digit-item" data-digit="5">5</div>
+                                            <div class="digit-item" data-digit="6">6</div>
+                                            <div class="digit-item" data-digit="7">7</div>
+                                            <div class="digit-item" data-digit="8">8</div>
+                                            <div class="digit-item" data-digit="9">9</div>
+                                        </div>
+                                    </div>
+                                </div> <!-- End control-panel -->
+                            </div> <!-- End classic-board -->
+                            <div class="loto-board" id="loto-mb">
+                                <div class="loto-header">Đầu · Đuôi Lô Tô</div>
+                                <div class="loto-table">
+                                    <div class="lt-row" data-hover-head="0">
+                                        <div class="lt-head">0</div>
+                                        <div class="lt-tails">0, 6, 8</div>
+                                    </div>
+                                    <div class="lt-row" data-hover-head="1">
+                                        <div class="lt-head">1</div>
+                                        <div class="lt-tails">1, 2, 5, 9</div>
+                                    </div>
+                                    <div class="lt-row" data-hover-head="2">
+                                        <div class="lt-head">2</div>
+                                        <div class="lt-tails">1, 3, 9</div>
+                                    </div>
+                                    <div class="lt-row" data-hover-head="3">
+                                        <div class="lt-head">3</div>
+                                        <div class="lt-tails"></div>
+                                    </div>
+                                    <div class="lt-row" data-hover-head="4">
+                                        <div class="lt-head">4</div>
+                                        <div class="lt-tails">2, 4, 6</div>
+                                    </div>
+                                    <div class="lt-row" data-hover-head="5">
+                                        <div class="lt-head">5</div>
+                                        <div class="lt-tails">3</div>
+                                    </div>
+                                    <div class="lt-row" data-hover-head="6">
+                                        <div class="lt-head">6</div>
+                                        <div class="lt-tails">6, 7</div>
+                                    </div>
+                                    <div class="lt-row" data-hover-head="7">
+                                        <div class="lt-head">7</div>
+                                        <div class="lt-tails">2</div>
+                                    </div>
+                                    <div class="lt-row" data-hover-head="8">
+                                        <div class="lt-head">8</div>
+                                        <div class="lt-tails">1, 4, 8</div>
+                                    </div>
+                                    <div class="lt-row" data-hover-head="9">
+                                        <div class="lt-head">9</div>
+                                        <div class="lt-tails">1, 4, 9</div>
+                                    </div>
+                                </div>
+                                <div class="loto-hint">💡 Rê chuột vào Đầu số để bôi sáng số trúng bảng bên trái (Tính
+                                    năng
+                                    độc quyền)</div>
+                            </div> <!-- End loto-mb -->
+                        </div> <!-- End kq-classic-container -->
+
+                        <!-- XSMT MULTI-STATION SECTION -->
+                        <div class="kq-multi-container" style="margin-top: 32px;">
+                            <div class="classic-board multi-board">
+                                <div class="board-header">
+                                    <h3 class="board-title">XỔ SỐ MIỀN TRUNG</h3>
+                                    <div class="board-date">Thứ Hai - Ngày 23/03/2026</div>
+                                </div>
+                                <div class="xsmn-grid" id="idx-xsmt-grid" style="grid-template-columns: 50px 1fr 1fr;">
+                                    <div class="xsmn-header-row">
+                                        <div class="xsmn-hl">Giải</div>
+                                        <div class="xsmn-hc">Phú Yên</div>
+                                        <div class="xsmn-hc">Thừa T. Huế</div>
+                                    </div>
+                                    <div class="xsmn-row">
+                                        <div class="xsmn-lbl">G8</div>
+                                        <div class="xsmn-cell"><span class="number mn-num" data-tail="12">12</span>
+                                        </div>
+                                        <div class="xsmn-cell"><span class="number mn-num" data-tail="47">47</span>
+                                        </div>
+                                    </div>
+                                    <div class="xsmn-row">
+                                        <div class="xsmn-lbl">G7</div>
+                                        <div class="xsmn-cell"><span class="number mn-num" data-tail="84">184</span>
+                                        </div>
+                                        <div class="xsmn-cell"><span class="number mn-num" data-tail="36">536</span>
+                                        </div>
+                                    </div>
+                                    <div class="xsmn-row special-row">
+                                        <div class="xsmn-lbl">ĐB</div>
+                                        <div class="xsmn-cell"><span class="number mn-num special"
+                                                data-tail="36">827336</span></div>
+                                        <div class="xsmn-cell"><span class="number mn-num special"
+                                                data-tail="12">419012</span></div>
+                                    </div>
+                                </div>
+                                <div class="control-panel kq-filter-bar">
+                                    <div class="filter-primary-row">
+                                        <span class="filter-label">Hiển thị:</span>
+                                        <form class="digits-form">
+                                            <label class="radio" data-value="0"><input type="radio"
+                                                    name="showed-digits-mt" value="0" checked> <b></b><span>Đầy
+                                                    đủ</span></label>
+                                            <label class="radio" data-value="2"><input type="radio"
+                                                    name="showed-digits-mt" value="2"> <b></b><span>2 số</span></label>
+                                            <label class="radio" data-value="3"><input type="radio"
+                                                    name="showed-digits-mt" value="3"> <b></b><span>3 số</span></label>
+                                        </form>
+                                    </div>
+                                    <!-- Quick Digit Filter -->
+                                    <div class="digit-filter-row">
+                                        <span class="digit-label">Tìm số chứa:</span>
+                                        <div class="digit-list">
+                                            <div class="digit-item" data-digit="0">0</div>
+                                            <div class="digit-item" data-digit="1">1</div>
+                                            <div class="digit-item" data-digit="2">2</div>
+                                            <div class="digit-item" data-digit="3">3</div>
+                                            <div class="digit-item" data-digit="4">4</div>
+                                            <div class="digit-item" data-digit="5">5</div>
+                                            <div class="digit-item" data-digit="6">6</div>
+                                            <div class="digit-item" data-digit="7">7</div>
+                                            <div class="digit-item" data-digit="8">8</div>
+                                            <div class="digit-item" data-digit="9">9</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="loto-board xsmn-loto mt-loto">
+                                    <div class="loto-header">Đầu · Đuôi Lô Tô</div>
+                                    <div class="xsmn-grid loto-cols" style="grid-template-columns: 50px 1fr 1fr;">
+                                        <div class="xsmn-header-row">
+                                            <div class="xsmn-hl">Đầu</div>
+                                            <div class="xsmn-hc">Phú Yên</div>
+                                            <div class="xsmn-hc">T.T. Huế</div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="0">
+                                            <div class="lt-head">0</div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails"></div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="1">
+                                            <div class="lt-head">1</div>
+                                            <div class="xsmn-cell tails">12</div>
+                                            <div class="xsmn-cell tails"></div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="2">
+                                            <div class="lt-head">2</div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails">21</div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="3">
+                                            <div class="lt-head">3</div>
+                                            <div class="xsmn-cell tails">36</div>
+                                            <div class="xsmn-cell tails">36</div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="4">
+                                            <div class="lt-head">4</div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails">47</div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="5">
+                                            <div class="lt-head">5</div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails">58</div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="6">
+                                            <div class="lt-head">6</div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails"></div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="7">
+                                            <div class="lt-head">7</div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails"></div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="8">
+                                            <div class="lt-head">8</div>
+                                            <div class="xsmn-cell tails">84</div>
+                                            <div class="xsmn-cell tails"></div>
+                                        </div>
+                                        <div class="xsmn-row lt-row-multi" data-hover-head="9">
+                                            <div class="lt-head">9</div>
+                                            <div class="xsmn-cell tails"></div>
+                                            <div class="xsmn-cell tails"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- end content-xskt -->
+
+                        <!-- VIETLOTT CONTENT (Hidden) -->
+                        <div id="content-vietlott" class="hidden">
+                            <div class="vietlott-board">
+                                <!-- Mega 6/45 -->
+                                <div class="vlot-card">
+                                    <div class="vlot-head mega">
+                                        <div class="vlot-name">Mega 6/45</div>
+                                        <div class="vlot-info">Kỳ quay #01234 - 23/03/2026</div>
+                                    </div>
+                                    <div class="vlot-body">
+                                        <div class="vlot-balls">
+                                            <div class="vlot-ball" data-tail="05">05</div>
+                                            <div class="vlot-ball" data-tail="12">12</div>
+                                            <div class="vlot-ball" data-tail="27">27</div>
+                                            <div class="vlot-ball" data-tail="33">33</div>
+                                            <div class="vlot-ball" data-tail="41">41</div>
+                                            <div class="vlot-ball" data-tail="08">08</div>
+                                        </div>
+                                        <div class="vlot-jackpot">Jackpot: <span>92.450.000.000đ</span></div>
+                                    </div>
+                                </div>
+                                <!-- Power 6/55 -->
+                                <div class="vlot-card" style="margin-top: 32px;">
+                                    <div class="vlot-head power">
+                                        <div class="vlot-name">Power 6/55</div>
+                                        <div class="vlot-info">Kỳ quay #00987 - 23/03/2026</div>
+                                    </div>
+                                    <div class="vlot-body">
+                                        <div class="vlot-balls">
+                                            <div class="vlot-ball p-blue" data-tail="10">10</div>
+                                            <div class="vlot-ball p-blue" data-tail="18">18</div>
+                                            <div class="vlot-ball p-blue" data-tail="24">24</div>
+                                            <div class="vlot-ball p-blue" data-tail="36">36</div>
+                                            <div class="vlot-ball p-blue" data-tail="45">45</div>
+                                            <div class="vlot-ball p-blue" data-tail="52">52</div>
+                                            <div class="vlot-ball p-gold" data-tail="07">07</div>
+                                        </div>
+                                        <div class="vlot-jackpot">Jackpot 1: <span
+                                                class="txt-gold">217.800.000.000đ</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lich-section" id="lich-quay">
+                    <div class="sec-head">
+                        <div class="sec-title">
+                            <div class="sec-title-bar"></div>Lịch quay & Jackpot đang được quan tâm
+                        </div><span class="sec-more">Xem lịch đầy đủ →</span>
+                    </div>
+                    <div class="lich-grid">
+                        <div class="lich-card">
+                            <div class="lich-card-title">📅 Lịch quay hôm nay — Thứ Hai</div>
+                            <div class="lich-item"><span class="lich-game">XSMB</span><span
+                                    class="lich-time">18:15</span><span class="lich-status ls-done">Đã quay</span></div>
+                            <div class="lich-item"><span class="lich-game">XSMN (TP.HCM, Đồng Tháp, Cà Mau)</span><span
+                                    class="lich-time">16:30</span><span class="lich-status ls-done">Đã quay</span></div>
+                            <div class="lich-item"><span class="lich-game">XSMT (Phú Yên, Thừa T. Huế)</span><span
+                                    class="lich-time">17:15</span><span class="lich-status ls-done">Đã quay</span></div>
+                            <div class="lich-item"><span class="lich-game">Mega 6/45</span><span
+                                    class="lich-time">18:00</span><span class="lich-status ls-done">Đã quay</span></div>
+                            <div class="lich-item"><span class="lich-game">Keno (liên tục)</span><span
+                                    class="lich-time">Mỗi
+                                    10 phút</span><span class="lich-status ls-soon">Đang quay</span></div>
+                        </div>
+                        <div class="lich-card">
+                            <div class="lich-card-title">🏆 Jackpot nổi bật — đang tăng</div>
+                            <div class="jp-item">
+                                <div>
+                                    <div class="jp-game">Power 6/55</div>
+                                    <div class="jp-trend">↑ Tăng 15 tỷ tuần qua</div>
+                                </div>
+                                <div style="text-align:right">
+                                    <div class="jp-val">217 tỷ</div>
+                                    <div style="font-size:9px;color:var(--w30)">Chưa có người trúng 8 kỳ</div>
+                                </div>
+                            </div>
+                            <div class="jp-item">
+                                <div>
+                                    <div class="jp-game">Mega 6/45</div>
+                                    <div class="jp-trend">↑ Tăng 8 tỷ tuần qua</div>
+                                </div>
+                                <div style="text-align:right">
+                                    <div class="jp-val">92 tỷ</div>
+                                    <div style="font-size:9px;color:var(--w30)">Chưa có người trúng 4 kỳ</div>
+                                </div>
+                            </div>
+                            <div class="jp-item">
+                                <div>
+                                    <div class="jp-game">Max 3D Pro</div>
+                                    <div class="jp-trend" style="color:var(--w40)">Ổn định</div>
+                                </div>
+                                <div style="text-align:right">
+                                    <div class="jp-val" style="font-size:14px">2 tỷ</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DO VE NHANH -->
+                <div class="dove-section" id="do-ve">
+                    <div class="sec-head">
+                        <div class="sec-title">
+                            <div class="sec-title-bar"></div>Dò vé nhanh — không cần tìm lâu
+                        </div>
+                    </div>
+                    <div class="dove-card">
+                        <div class="dove-form">
+                            <div>
+                                <div class="dove-label">Chọn game</div><select class="dove-select">
+                                    <option>Mega 6/45</option>
+                                    <option>Power 6/55</option>
+                                    <option>Keno</option>
+                                    <option>Max 3D</option>
+                                    <option>XSMB</option>
+                                    <option>XSMN</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div class="dove-label">Bộ số của bạn</div><input class="dove-input" type="text"
+                                    placeholder="VD: 05 12 27 33 41 08">
+                            </div>
+                            <div>
+                                <div class="dove-label">Kỳ quay</div><select class="dove-select">
+                                    <option>Kỳ gần nhất</option>
+                                    <option>Thứ Hai 23/03</option>
+                                    <option>Thứ Tư 21/03</option>
+                                    <option>Thứ Sáu 19/03</option>
+                                </select>
+                            </div>
+                            <button class="dove-submit">Kiểm tra ngay</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- end xsmb-section -->
+
+            <!-- ════ SIDE COLUMN ════ -->
+            <div class="side-col">
+                <!-- Date picker mini -->
+                <div class="date-nav">
+                    <div class="dn-title">Chọn ngày xem kết quả</div>
+                    <div class="dn-grid" id="datePicker">
+                        <button class="dn-btn active" data-date="23/03">23<br><span>T2</span></button>
+                        <button class="dn-btn" data-date="22/03">22<br><span>CN</span></button>
+                        <button class="dn-btn" data-date="21/03">21<br><span>T7</span></button>
+                        <button class="dn-btn" data-date="20/03">20<br><span>T6</span></button>
+                        <button class="dn-btn" data-date="19/03">19<br><span>T5</span></button>
+                        <button class="dn-btn" data-date="18/03">18<br><span>T4</span></button>
+                        <button class="dn-btn" data-date="17/03">17<br><span>T3</span></button>
+                    </div>
+                </div>
+
+                <!-- AI Insight -->
+                <div class="sc-ai-card">
+                    <div class="sc-ai-head">
+                        <span class="sc-ai-badge">AI Thiên Số</span>
+                        <span class="sc-ai-title">Nhận xét hôm nay</span>
+                    </div>
+                    <div class="sc-ai-body">
+                        Đặc biệt hôm nay <strong>82.736</strong> — đầu <strong>82</strong> xuất hiện lần đầu trong 45
+                        ngày, đánh dấu chu kỳ hồi phục. Đuôi <strong>36</strong> đang trong chuỗi nóng — đã về <em>4 lần
+                            trong 10 ngày qua</em>.<br><br>
+                        Đáng chú ý: <strong>số 72</strong> vắng mặt 38 kỳ liên tiếp — theo chu kỳ lịch sử, nhóm số này
+                        thường hồi phục trong vòng 5–12 kỳ tiếp theo.
+                    </div>
+                    <div class="sc-ai-tags">
+                        <span class="sc-ai-tag gold">36 đang nóng</span>
+                        <span class="sc-ai-tag">Đầu 82 hồi phục</span>
+                        <span class="sc-ai-tag jade">72 lâu chưa về</span>
+                        <span class="sc-ai-tag">Kỳ #84203</span>
+                    </div>
+                    <div class="sc-ai-input-row">
+                        <input class="sc-ai-input" id="aiInput" placeholder='Hỏi: "Số 36 hay về thứ mấy?"'>
+                        <button class="sc-ai-send" onclick="handleAiAsk()">Hỏi →</button>
+                    </div>
+                    <div id="aiResult" class="sc-ai-result" style="display:none"></div>
+                </div>
+
+                <!-- Dò vé mini -->
+                <div class="sc-dove-card">
+                    <div class="sc-dove-title">🔍 Dò vé nhanh — XSMB</div>
+                    <div class="sc-dove-label">Nhập số cuối (2–5 chữ số)</div>
+                    <input class="sc-dove-input" id="doveInput" placeholder="VD: 36 hoặc 736 hoặc 82736">
+                    <div class="sc-dove-hint">Hệ thống sẽ kiểm tra toàn bộ giải của kỳ quay hôm nay</div>
+                    <button class="sc-dove-btn" onclick="doVe()">Kiểm tra ngay</button>
+                    <div id="doveResult" class="sc-dove-result" style="display:none"></div>
+                </div>
+
+                <!-- Lô gan top -->
+                <div class="sc-logan-card">
+                    <div class="sc-lc-header">
+                        <span class="sc-lc-title">❄️ Lô gan hôm nay — Top 8</span>
+                        <span class="sec-more" style="font-size:11px">Xem đủ →</span>
+                    </div>
+                    <div class="sc-lc-list" id="loganList">
+                        <div class="sc-lc-item">
+                            <div class="sc-lc-num">72</div>
+                            <div class="sc-lc-bar-wrap">
+                                <div class="sc-lc-bar" style="width:95%"></div>
+                            </div>
+                            <div class="sc-lc-days">Số 72</div>
+                        </div>
+                        <div class="sc-lc-item">
+                            <div class="sc-lc-num">13</div>
+                            <div class="sc-lc-bar-wrap">
+                                <div class="sc-lc-bar" style="width:80%"></div>
+                            </div>
+                            <div class="sc-lc-days">Số 13</div>
+                        </div>
+                        <div class="sc-lc-item">
+                            <div class="sc-lc-num">89</div>
+                            <div class="sc-lc-bar-wrap">
+                                <div class="sc-lc-bar" style="width:72%"></div>
+                            </div>
+                            <div class="sc-lc-days">Số 89</div>
+                        </div>
+                        <div class="sc-lc-item">
+                            <div class="sc-lc-num">04</div>
+                            <div class="sc-lc-bar-wrap">
+                                <div class="sc-lc-bar" style="width:65%"></div>
+                            </div>
+                            <div class="sc-lc-days">Số 04</div>
+                        </div>
+                        <div class="sc-lc-item">
+                            <div class="sc-lc-num">61</div>
+                            <div class="sc-lc-bar-wrap">
+                                <div class="sc-lc-bar" style="width:58%"></div>
+                            </div>
+                            <div class="sc-lc-days">Số 61</div>
+                        </div>
+                        <div class="sc-lc-item">
+                            <div class="sc-lc-num">67</div>
+                            <div class="sc-lc-bar-wrap">
+                                <div class="sc-lc-bar" style="width:50%"></div>
+                            </div>
+                            <div class="sc-lc-days">Số 67</div>
+                        </div>
+                        <div class="sc-lc-item">
+                            <div class="sc-lc-num">36</div>
+                            <div class="sc-lc-bar-wrap">
+                                <div class="sc-lc-bar sc-lc-bar-hot" style="width:38%"></div>
+                            </div>
+                            <div class="sc-lc-days">Số 36</div>
+                        </div>
+                        <div class="sc-lc-item">
+                            <div class="sc-lc-num">25</div>
+                            <div class="sc-lc-bar-wrap">
+                                <div class="sc-lc-bar" style="width:30%"></div>
+                            </div>
+                            <div class="sc-lc-days">Số 25</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- end side-col -->
+
+        </div><!-- end xsmb-layout -->
+    </div><!-- end page-body -->
+    <footer class="footer">
+        <div class="ft-grid">
+            <div class="ft-col">
+                <div class="ft-logo-name">Thiên Số</div>
+                <p class="ft-desc">Dữ liệu rõ hơn, chọn số tốt hơn.</p>
+            </div>
+            <div class="ft-col">
+                <div class="ft-title">Sản phẩm</div><a href="#" class="ft-link">Tính năng</a><a href="#"
+                    class="ft-link">Hỗ trợ game</a><a href="#" class="ft-link">Câu hỏi thường gặp</a>
+            </div>
+            <div class="ft-col">
+                <div class="ft-title">Chính sách</div><a href="#" class="ft-link">Điều khoản sử dụng</a><a href="#"
+                    class="ft-link">Chính sách bảo mật</a><a href="#" class="ft-link">Liên hệ</a>
+            </div>
+            <div class="ft-col">
+                <div class="ft-title">Kết nối</div><a href="#" class="ft-link">Email hỗ trợ</a><a href="#"
+                    class="ft-link">Facebook</a><a href="#" class="ft-link">Zalo / Telegram</a>
+            </div>
+        </div>
+        <div class="ft-bottom">
+            <p>Thiên Số là nền tảng phân tích dữ liệu và hỗ trợ theo dõi thông tin. Nền tảng không bán vé và không cam
+                kết kết quả.</p>
+            <p style="margin-top: 8px; color: var(--w30);">© 2026 Thiên Số. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="./scripts/main.js"></script>
+    <script src="./scripts/kqxs-data.js"></script>
+</body>
+
+</html>

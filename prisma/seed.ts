@@ -55,30 +55,31 @@ async function main() {
     const mienNamProvinces = [
         // Thứ 2
         { code: 'TPHCM', name: 'TP. Hồ Chí Minh', shortName: 'HCM', day: 1 },
-        { code: 'DONGTHÁP', name: 'Đồng Tháp', shortName: 'ĐTP', day: 1 },
+        { code: 'DONGTHAP', name: 'Đồng Tháp', shortName: 'ĐTP', day: 1 },
         { code: 'CAMAU', name: 'Cà Mau', shortName: 'CMU', day: 1 },
         // Thứ 3
-        { code: 'BACLIEU', name: 'Bạc Liêu', shortName: 'BLI', day: 2 },
-        { code: 'BINHDUONG', name: 'Bình Dương', shortName: 'BDG', day: 2 },
+        { code: 'BENTRE', name: 'Bến Tre', shortName: 'BTR', day: 2 },
         { code: 'VUNGTAU', name: 'Vũng Tàu', shortName: 'VTU', day: 2 },
+        { code: 'BACLIEU', name: 'Bạc Liêu', shortName: 'BLI', day: 2 },
         // Thứ 4
         { code: 'CANTHO', name: 'Cần Thơ', shortName: 'CTH', day: 3 },
-        { code: 'DONGNAÍ', name: 'Đồng Nai', shortName: 'ĐNI', day: 3 },
+        { code: 'DONGNAI', name: 'Đồng Nai', shortName: 'ĐNI', day: 3 },
         { code: 'SOCTRANG', name: 'Sóc Trăng', shortName: 'STG', day: 3 },
         // Thứ 5
         { code: 'TAYNINH', name: 'Tây Ninh', shortName: 'TNH', day: 4 },
-        { code: 'ANHGIANG', name: 'An Giang', shortName: 'AGI', day: 4 },
+        { code: 'ANGIANG', name: 'An Giang', shortName: 'AGI', day: 4 },
         { code: 'BINHTHUAN', name: 'Bình Thuận', shortName: 'BTN', day: 4 },
         // Thứ 6
         { code: 'VINHLONG', name: 'Vĩnh Long', shortName: 'VLG', day: 5 },
-        { code: 'BINHPHUOC', name: 'Bình Phước', shortName: 'BPC', day: 5 },
+        { code: 'BINHDUONG', name: 'Bình Dương', shortName: 'BDG', day: 5 },
         { code: 'TRAVINH', name: 'Trà Vinh', shortName: 'TVI', day: 5 },
         // Thứ 7
-        { code: 'TPHCM2', name: 'TP. HCM (T7)', shortName: 'HCM2', day: 6 },
+        { code: 'TPHCM', name: 'TP. Hồ Chí Minh', shortName: 'HCM', day: 6 },
         { code: 'LONGAN', name: 'Long An', shortName: 'LAN', day: 6 },
-        { code: 'BINHDUONG2', name: 'Bình Dương (T7)', shortName: 'BDG2', day: 6 },
+        { code: 'HAUGIANG', name: 'Hậu Giang', shortName: 'HGI', day: 6 },
+        { code: 'BINHPHUOC', name: 'Bình Phước', shortName: 'BPC', day: 6 },
         // Chủ nhật
-        { code: 'TIENGANG', name: 'Tiền Giang', shortName: 'TGI', day: 0 },
+        { code: 'TIENGIANG', name: 'Tiền Giang', shortName: 'TGI', day: 0 },
         { code: 'KIENGIANG', name: 'Kiên Giang', shortName: 'KGI', day: 0 },
         { code: 'DALAT', name: 'Đà Lạt', shortName: 'DLA', day: 0 },
     ]
@@ -118,7 +119,7 @@ async function main() {
     const mienTrungProvinces = [
         { code: 'THUATHIENHUE', name: 'Thừa T. Huế', shortName: 'TTH', day: 1 },
         { code: 'PHUYEN', name: 'Phú Yên', shortName: 'PYE', day: 1 },
-        { code: 'DAKCAK', name: 'Đắk Lắk', shortName: 'DLK', day: 2 },
+        { code: 'DAKLAK', name: 'Đắk Lắk', shortName: 'DLK', day: 2 },
         { code: 'QUANGNAM', name: 'Quảng Nam', shortName: 'QNM', day: 2 },
         { code: 'DANANG', name: 'Đà Nẵng', shortName: 'DNA', day: 3 },
         { code: 'KHANHHOA', name: 'Khánh Hòa', shortName: 'KHO', day: 3 },
@@ -127,11 +128,12 @@ async function main() {
         { code: 'QUANGBINH', name: 'Quảng Bình', shortName: 'QBI', day: 4 },
         { code: 'GIALAI', name: 'Gia Lai', shortName: 'GLA', day: 5 },
         { code: 'NINHTHUAN', name: 'Ninh Thuận', shortName: 'NTN', day: 5 },
-        { code: 'DANANG2', name: 'Đà Nẵng (T7)', shortName: 'DNA2', day: 6 },
-        { code: 'KHANHHOA2', name: 'Khánh Hòa (T7)', shortName: 'KHO2', day: 6 },
-        { code: 'DAKNONG', name: 'Đắk Nông', shortName: 'DNG', day: 0 },
-        { code: 'QUANGNGAI', name: 'Quảng Ngãi', shortName: 'QNG', day: 0 },
+        { code: 'DANANG', name: 'Đà Nẵng', shortName: 'DNA', day: 6 },
+        { code: 'QUANGNGAI', name: 'Quảng Ngãi', shortName: 'QNG', day: 6 },
+        { code: 'DAKNONG', name: 'Đắk Nông', shortName: 'DNG', day: 6 },
         { code: 'KONTUM', name: 'Kon Tum', shortName: 'KTM', day: 0 },
+        { code: 'KHANHHOA', name: 'Khánh Hòa', shortName: 'KHO', day: 0 },
+        { code: 'THUATHIENHUE', name: 'Thừa T. Huế', shortName: 'TTH', day: 0 },
     ]
 
     for (const [i, p] of mienTrungProvinces.entries()) {

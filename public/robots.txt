@@ -1,0 +1,12 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dev/
+
+# Host
+Host: https://thienso.vercel.app
+
+# Sitemaps
+Sitemap: https://thienso.vercel.app/sitemap.xml
+Sitemap: https://thienso.com/sitemap.xml

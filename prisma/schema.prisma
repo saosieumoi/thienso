@@ -65,6 +65,7 @@ model Draw {
 
   lotoResults   LotoResult?
   results       Result[]
+  vietlottPrizes  VietlottPrize[] 
 
   @@unique([drawDate, lotteryTypeId, provinceId])
   @@index([drawDate])
@@ -175,4 +176,17 @@ enum LotteryCategory {
   MAX3D
   MAX3DPRO
   KENO
+}
+
+model VietlottPrize {
+  id        String   @id @default(cuid())
+  drawId    String
+  draw      Draw     @relation(fields: [drawId], references: [id], onDelete: Cascade)
+  name      String   // "Jackpot 1", "Jackpot 2", "Giải nhất", "Giải nhì"...
+  winners   Int      @default(0)
+  value     String   // "52,121,608,950" — lưu string vì số rất lớn
+  createdAt DateTime @default(now())
+
+  @@index([drawId])
+  @@map("vietlott_prizes")
 }

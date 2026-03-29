@@ -39,11 +39,11 @@ interface ParsedProvince {
 // ─── Lịch quay XSMN ──────────────────────────────────
 const XSMN_SCHEDULE: Record<number, string[]> = {
     1: ['TPHCM', 'DONGTHAP', 'CAMAU'],
-    2: ['BACLIEU', 'BINHDUONG', 'VUNGTAU'],
+    2: ['BENTRE', 'VUNGTAU', 'BACLIEU'],
     3: ['CANTHO', 'DONGNAI', 'SOCTRANG'],
     4: ['TAYNINH', 'ANGIANG', 'BINHTHUAN'],
-    5: ['VINHLONG', 'BINHPHUOC', 'TRAVINH'],
-    6: ['TPHCM', 'LONGAN', 'BINHDUONG'],
+    5: ['VINHLONG', 'BINHDUONG', 'TRAVINH'],
+    6: ['TPHCM', 'LONGAN', 'BINHPHUOC', 'HAUGIANG'],
     0: ['TIENGIANG', 'KIENGIANG', 'DALAT'],
 }
 
@@ -53,6 +53,7 @@ const NAME_TO_CODE: Record<string, string> = {
     'cần thơ': 'CANTHO',
     'sóc trăng': 'SOCTRANG',
     'bạc liêu': 'BACLIEU',
+    'bến tre': 'BENTRE',
     'bình dương': 'BINHDUONG',
     'vũng tàu': 'VUNGTAU',
     'tây ninh': 'TAYNINH',
@@ -70,6 +71,7 @@ const NAME_TO_CODE: Record<string, string> = {
     'đà lạt': 'DALAT',
     'đồng tháp': 'DONGTHAP',
     'cà mau': 'CAMAU',
+    'hậu giang': 'HAUGIANG',
 }
 
 // Row index → PrizeName (null = bỏ qua)
@@ -194,9 +196,6 @@ function parseDaiphat(html: string): ParsedProvince[] {
 
     // Build result, sort giải theo thứ tự chuẩn
     return codes.flatMap(code => {
-        // const prizes = prizeMap[code]
-        // if (!prizes.length) return []
-        // prizes.sort((a, b) => PRIZE_ORDER.indexOf(a.name) - PRIZE_ORDER.indexOf(b.name))
         const VALID_PRIZES: PrizeName[] = [
             PrizeName.DB,
             PrizeName.G1,

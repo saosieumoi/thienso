@@ -43,12 +43,12 @@ interface ParsedProvince {
 // ─── Lịch quay XSMT ──────────────────────────────────
 const XSMT_SCHEDULE: Record<number, string[]> = {
     1: ['THUATHIENHUE', 'PHUYEN'],
-    2: ['DAKNONG', 'QUANGNAM'],
+    2: ['QUANGNAM', 'DAKLAK'],
     3: ['DANANG', 'KHANHHOA'],
     4: ['BINHDINH', 'QUANGTRI', 'QUANGBINH'],
     5: ['GIALAI', 'NINHTHUAN'],
-    6: ['DANANG', 'KHANHHOA', 'DAKLAK'],
-    0: ['KONTUM', 'QUANGNGAI', 'DAKNONG'],
+    6: ['DANANG', 'QUANGNGAI', 'DAKNONG'],
+    0: ['KONTUM', 'KHANHHOA', 'THUATHIENHUE'],
 }
 
 // Map tên đài lowercase → province code DB
