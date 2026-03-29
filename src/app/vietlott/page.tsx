@@ -247,13 +247,12 @@ function GameCard({ gameCode, draw }: { gameCode: keyof typeof GAME_CONFIG; draw
 }
 
 // ─── Page ─────────────────────────────────────────────
+// CRITICAL: Do NOT use Promise.all — sequential queries only (connection_limit=1)
 export default async function VietlottPage() {
-    const [mega, power, max3d, max3dpro] = await Promise.all([
-        getLatestDraw('MEGA645'),
-        getLatestDraw('POWER655'),
-        getLatestDraw('MAX3D'),
-        getLatestDraw('MAX3DPRO'),
-    ])
+    const mega = await getLatestDraw('MEGA645')
+    const power = await getLatestDraw('POWER655')
+    const max3d = await getLatestDraw('MAX3D')
+    const max3dpro = await getLatestDraw('MAX3DPRO')
 
     // Side column data for Vietlott
     const megaJackpot = mega?.vietlottPrizes?.find(p => p.name.toLowerCase().includes('jackpot 1'))?.value ?? null

@@ -37,23 +37,23 @@ export async function GET(request: Request) {
     const nextDay = new Date(targetDate)
     nextDay.setDate(nextDay.getDate() + 1)
 
-    const [draw, history] = await Promise.all([
-        prisma.draw.findFirst({
-            where: {
-                lotteryType: { code: 'XSMB' },
-                drawDate: { gte: targetDate, lt: nextDay },
-            },
-            include: { results: true, lotoResults: true },
-        }),
-        prisma.draw.findMany({
-            where: { lotteryType: { code: 'XSMB' }, isComplete: true },
-            orderBy: { drawDate: 'desc' },
-            take: 7,
-            include: {
-                results: { where: { prizeName: { in: ['DB', 'G1', 'G7'] } } },
-            },
-        }),
-    ])
+    // CRITICAL: Do NOT use Promise.all — sequential queries only (connection_limit=1)
+    const draw = await prisma.draw.findFirst({
+        where: {
+            lotteryType: { code: 'XSMB' },
+            drawDate: { gte: targetDate, lt: nextDay },
+        },
+        include: { results: true, lotoResults: true },
+    })
+
+    const history = await prisma.draw.findMany({
+        where: { lotteryType: { code: 'XSMB' }, isComplete: true },
+        orderBy: { drawDate: 'desc' },
+        take: 7,
+        include: {
+            results: { where: { prizeName: { in: ['DB', 'G1', 'G7'] } } },
+        },
+    })
 
     if (draw?.results) {
         draw.results.sort(

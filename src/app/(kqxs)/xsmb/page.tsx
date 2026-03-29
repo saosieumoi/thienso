@@ -41,36 +41,36 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // ── Fetch data ────────────────────────────────────────
+// CRITICAL: Do NOT use Promise.all — sequential queries only (connection_limit=1)
 async function getXSMBData() {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
-    const [draw, history] = await Promise.all([
-        prisma.draw.findFirst({
-            where: {
-                lotteryType: { code: 'XSMB' },
-                drawDate: { gte: today },
+    const draw = await prisma.draw.findFirst({
+        where: {
+            lotteryType: { code: 'XSMB' },
+            drawDate: { gte: today },
+        },
+        orderBy: { drawDate: 'desc' },
+        include: {
+            results: true,
+            lotoResults: true,
+        },
+    })
+
+    const history = await prisma.draw.findMany({
+        where: {
+            lotteryType: { code: 'XSMB' },
+            isComplete: true,
+        },
+        orderBy: { drawDate: 'desc' },
+        take: 7,
+        include: {
+            results: {
+                where: { prizeName: { in: ['DB', 'G1', 'G7'] } },
             },
-            orderBy: { drawDate: 'desc' },
-            include: {
-                results: true,
-                lotoResults: true,
-            },
-        }),
-        prisma.draw.findMany({
-            where: {
-                lotteryType: { code: 'XSMB' },
-                isComplete: true,
-            },
-            orderBy: { drawDate: 'desc' },
-            take: 7,
-            include: {
-                results: {
-                    where: { prizeName: { in: ['DB', 'G1', 'G7'] } },
-                },
-            },
-        }),
-    ])
+        },
+    })
 
     // Sort giải đúng thứ tự ĐB → G7
     if (draw?.results) {

@@ -5,13 +5,16 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import SideColumn from '@/components/SideColumn'
 
-// KHÔNG dùng generateStaticParams — nếu có, Next.js sẽ pre-render TẤT CẢ
+// KHÔNG có generateStaticParams — nếu có, Next.js sẽ pre-render TẤT CẢ
 // pages tại build time, gây DB connection pool exhaustion (connection_limit=1).
+// Ngay cả 7 pages cũng timeout vì Next.js pre-render SONG SONG và generateMetadata
+// cũng query DB, tạo ra nhiều concurrent connections.
 //
 // Thay vào đó:
 //   - dynamic = 'force-static': page được tạo ON-DEMAND khi có request đầu tiên
 //   - revalidate = 2592000: cache trong 30 ngày
 //   - Sau khi crawl xong → gọi revalidatePath('/xsmt/[date]') để cập nhật
+//   - Googlebot sẽ trigger generation khi crawl → vẫn có SEO
 export const dynamic = 'force-static'
 export const revalidate = 2592000 // 30 days
 
@@ -82,18 +85,17 @@ async function getDrawsByDate(dateStr: string) {
         draw.results.sort((a, b) => PRIZE_ORDER.indexOf(a.prizeName) - PRIZE_ORDER.indexOf(b.prizeName))
     })
 
-    const [prev, next] = await Promise.all([
-        prisma.draw.findFirst({
-            where: { lotteryType: { code: 'XSMT' }, drawDate: { lt: drawDate }, isComplete: true },
-            orderBy: { drawDate: 'desc' },
-            select: { drawDate: true },
-        }),
-        prisma.draw.findFirst({
-            where: { lotteryType: { code: 'XSMT' }, drawDate: { gt: drawDate }, isComplete: true },
-            orderBy: { drawDate: 'asc' },
-            select: { drawDate: true },
-        }),
-    ])
+    // CRITICAL: Do NOT use Promise.all — sequential queries only (connection_limit=1)
+    const prev = await prisma.draw.findFirst({
+        where: { lotteryType: { code: 'XSMT' }, drawDate: { lt: drawDate }, isComplete: true },
+        orderBy: { drawDate: 'desc' },
+        select: { drawDate: true },
+    })
+    const next = await prisma.draw.findFirst({
+        where: { lotteryType: { code: 'XSMT' }, drawDate: { gt: drawDate }, isComplete: true },
+        orderBy: { drawDate: 'asc' },
+        select: { drawDate: true },
+    })
 
     return {
         draws,
