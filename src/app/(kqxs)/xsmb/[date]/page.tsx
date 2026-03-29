@@ -40,18 +40,9 @@ function isValidDateFormat(dateStr: string): boolean {
     return /^\d{2}-\d{2}-\d{4}$/.test(dateStr) && parseDate(dateStr) !== null
 }
 
-// ── generateStaticParams ──
-export async function generateStaticParams() {
-    const draws = await prisma.draw.findMany({
-        where: { lotteryType: { code: 'XSMB' }, isComplete: true },
-        orderBy: { drawDate: 'desc' },
-        take: 30,
-        select: { drawDate: true },
-    })
-    return draws.map(d => ({
-        date: formatDateForUrl(d.drawDate),
-    }))
-}
+// Pages are rendered on-demand via ISR (revalidate = 3600)
+// No need to pre-render all historical dates at build time
+// which would exhaust the DB connection pool (connection_limit=1)
 
 // ── SEO ──
 export async function generateMetadata(
