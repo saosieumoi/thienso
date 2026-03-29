@@ -1,6 +1,9 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 
+// Prevent build-time pre-rendering to avoid DB connection pool exhaustion
+export const dynamic = 'force-dynamic'
+
 // ── Fetch latest DB from each region for quick nav ──
 async function getQuickStats() {
     const [xsmb, xsmn, xsmt, mega, power] = await Promise.all([
