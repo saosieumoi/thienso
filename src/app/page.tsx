@@ -346,7 +346,7 @@ export default async function HomePage({ searchParams }: PageProps) {
   const { xsmb, xsmn, xsmt, mega, power, max3d, max3dpro } = await getHomeData(dateStr)
 
   const isSpecificDate = !!dateStr && dateStr.length > 0
-  const displayDate = isSpecificDate ? parseDate(dateStr!) : new Date()
+  const displayDate = isSpecificDate ? (parseDate(dateStr!) ?? new Date()) : new Date()
   const displayDateVN = formatDate(displayDate, { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })
 
   // Get latest date for XSMN/XSMT grouping
