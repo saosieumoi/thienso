@@ -54,6 +54,12 @@ function Max3DResults({ draw, cfg }: {
 }) {
     const prizeResults = draw.results.filter(r => r.prizeName.startsWith('VL'))
 
+    // Tìm giải Đặc biệt từ bảng giải thưởng
+    const specialPrize = draw.vietlottPrizes?.find(p =>
+        p.name.toLowerCase().includes('đặc biệt') ||
+        p.name.toLowerCase().includes('jackpot')
+    )
+
     if (prizeResults.length === 0) {
         const allNums = draw.results.flatMap(r => r.numbers)
         return (
@@ -71,12 +77,19 @@ function Max3DResults({ draw, cfg }: {
         <div className="space-y-3">
             {prizeResults.map(result => (
                 <div key={result.id}>
-                    <p className={`text-xs font-bold uppercase tracking-wider ${cfg.color} mb-1.5`}>
-                        {VL_PRIZE_LABEL[result.prizeName] ?? result.prizeName}
-                        <span className="text-gray-400 font-normal ml-1.5 normal-case tracking-normal">
+                    <div className="flex items-baseline gap-2 mb-1.5">
+                        <p className={`text-xs font-bold uppercase tracking-wider ${cfg.color}`}>
+                            {VL_PRIZE_LABEL[result.prizeName] ?? result.prizeName}
+                        </p>
+                        <span className="text-gray-400 font-normal text-xs normal-case tracking-normal">
                             ({result.numbers.length} bộ)
                         </span>
-                    </p>
+                        {result.prizeName === 'VL1' && specialPrize && (
+                            <span className={`text-xs font-semibold ${cfg.color} ml-auto`}>
+                                {specialPrize.value}
+                            </span>
+                        )}
+                    </div>
                     <div className="flex flex-wrap gap-2">
                         {result.numbers.map((n, i) => (
                             <span key={i} className={`text-xl font-black tracking-widest ${cfg.color} bg-white rounded-xl px-3 py-1.5 border-2 ${cfg.border}`}>
@@ -171,7 +184,7 @@ function GameCard({ gameCode, draw }: { gameCode: keyof typeof GAME_CONFIG; draw
         : null
 
     const jackpotPrize = draw?.vietlottPrizes?.find(p =>
-        p.name.toLowerCase().includes('jackpot 1') || p.name.toLowerCase() === 'jackpot'
+        p.name.toLowerCase().includes('jackpot')
     )
 
     return (
@@ -204,9 +217,7 @@ function GameCard({ gameCode, draw }: { gameCode: keyof typeof GAME_CONFIG; draw
                     {/* Jackpot */}
                     {jackpotPrize && (
                         <div className="px-5 pb-3">
-                            <p className="text-xs text-gray-500 mb-0.5">
-                                {jackpotPrize.name.includes('1') ? 'Jackpot 1' : 'Jackpot'}:
-                            </p>
+                            <p className="text-xs text-gray-500 mb-0.5">Jackpot:</p>
                             <p className={`text-xl font-black ${cfg.color}`}>{jackpotPrize.value}đ</p>
                             {jackpotPrize.winners > 0 && (
                                 <p className="text-xs text-emerald-600 font-semibold mt-0.5">

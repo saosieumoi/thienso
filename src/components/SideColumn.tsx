@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 
-type Region = 'xsmb' | 'xsmn' | 'xsmt' | 'vietlott'
+type Region = 'home' | 'xsmb' | 'xsmn' | 'xsmt' | 'vietlott'
 
 interface SideColumnProps {
     region: Region
@@ -14,14 +14,75 @@ interface SideColumnProps {
     jackpotData?: { mega: string | null; power: string | null }
 }
 
-// Format cho hiển thị DD/MM
+// Region-specific config
+const REGION_CONFIG: Record<Region, {
+    title: string
+    accentColor: string
+    badgeColor: string
+    aiHeadline: string
+    quickLinks: Array<{ href: string; label: string }>
+}> = {
+    home: {
+        title: 'Tổng hợp',
+        accentColor: 'text-[#C9A84C]',
+        badgeColor: 'bg-[#C9A84C]/20 text-[#C9A84C]',
+        aiHeadline: 'Tổng hợp hôm nay',
+        quickLinks: [
+            { href: '/xsmb', label: 'XSMB' },
+            { href: '/xsmn', label: 'XSMN' },
+            { href: '/xsmt', label: 'XSMT' },
+            { href: '/vietlott', label: 'Vietlott' },
+        ],
+    },
+    xsmb: {
+        title: 'Miền Bắc',
+        accentColor: 'text-[#C9A84C]',
+        badgeColor: 'bg-[#C9A84C]/20 text-[#C9A84C]',
+        aiHeadline: 'XSMB hôm nay',
+        quickLinks: [
+            { href: '/xsmb', label: 'Kết quả MB' },
+            { href: '/xsmb/lich-su', label: 'Lịch sử' },
+        ],
+    },
+    xsmn: {
+        title: 'Miền Nam',
+        accentColor: 'text-[#2A6B5C]',
+        badgeColor: 'bg-[#2A6B5C]/20 text-[#2A6B5C]',
+        aiHeadline: 'XSMN hôm nay',
+        quickLinks: [
+            { href: '/xsmn', label: 'Kết quả MN' },
+            { href: '/xsmn/lich-su', label: 'Lịch sử' },
+        ],
+    },
+    xsmt: {
+        title: 'Miền Trung',
+        accentColor: 'text-[#2A6B5C]',
+        badgeColor: 'bg-[#2A6B5C]/20 text-[#2A6B5C]',
+        aiHeadline: 'XSMT hôm nay',
+        quickLinks: [
+            { href: '/xsmt', label: 'Kết quả MT' },
+            { href: '/xsmt/lich-su', label: 'Lịch sử' },
+        ],
+    },
+    vietlott: {
+        title: 'Vietlott',
+        accentColor: 'text-red-600',
+        badgeColor: 'bg-red-500/20 text-red-600',
+        aiHeadline: 'Vietlott hôm nay',
+        quickLinks: [
+            { href: '/vietlott', label: 'Mega 6/45' },
+            { href: '/vietlott', label: 'Power 6/55' },
+            { href: '/vietlott', label: 'Max 3D' },
+        ],
+    },
+}
+
 function formatDateDisplay(d: Date): string {
     const day = d.getDate().toString().padStart(2, '0')
     const month = (d.getMonth() + 1).toString().padStart(2, '0')
     return `${day}/${month}`
 }
 
-// Format cho URL: DD-MM-YYYY
 function formatDateForUrl(d: Date): string {
     const year = d.getFullYear()
     const month = (d.getMonth() + 1).toString().padStart(2, '0')
@@ -47,6 +108,8 @@ export default function SideColumn({
     const [aiInput, setAiInput] = useState('')
     const [aiResult, setAiResult] = useState<string | null>(null)
 
+    const config = REGION_CONFIG[region]
+
     // Generate last 7 days for date picker
     const days = Array.from({ length: 7 }, (_, i) => {
         const d = new Date()
@@ -60,7 +123,6 @@ export default function SideColumn({
             setDoveResult({ hit: false, message: 'Vui lòng nhập ít nhất 2 chữ số.' })
             return
         }
-        // For now, simple check against dbNumbers
         const hits = dbNumbers.filter(d => d.number.endsWith(query))
         if (hits.length > 0) {
             setDoveResult({
@@ -77,18 +139,57 @@ export default function SideColumn({
 
     const handleAiAsk = () => {
         const q = aiInput.toLowerCase()
-        if (q.includes('36')) {
-            setAiResult('Số 36 về 4 lần trong 10 ngày qua — đang trong chu kỳ nóng. Hay về Thứ 2 và Thứ 5.')
-        } else if (q.includes('72')) {
-            setAiResult('Số 72 đã vắng 38 kỳ liên tiếp — thuộc nhóm gan dài nhất. Theo lịch sử, số gan trên 30 kỳ thường hồi phục mạnh.')
-        } else if (q.includes('đặc biệt') || q.includes('db')) {
-            setAiResult(`Đặc biệt hôm nay ${dbNumbers[0]?.number || '—'}. Đầu ${dbNumbers[0]?.number.slice(0, 2) || '—'} có thể đang trong chu kỳ hồi phục.`)
+
+        // Dynamic AI responses based on region and query
+        if (region === 'vietlott') {
+            if (q.includes('mega') || q.includes('6/45')) {
+                setAiResult('Mega 6/45 quay vào Thứ 6, CN. Tỷ lệ trúng Jackpot là 1/8.1 triệu.')
+            } else if (q.includes('power') || q.includes('6/55')) {
+                setAiResult('Power 6/55 quay vào T3, T5, T7. Jackpot tích lũy nhanh chóng.')
+            } else if (q.includes('jackpot')) {
+                setAiResult(`Mega: ${jackpotData?.mega || '—'}đ | Power: ${jackpotData?.power || '—'}đ`)
+            } else {
+                setAiResult('Hỏi về Mega, Power, hoặc jackpot để được giải đáp.')
+            }
         } else {
-            setAiResult('Tính năng AI đang được phát triển. Hãy đăng ký để trải nghiệm sớm!')
+            // Traditional lottery
+            if (q.includes('đặc biệt') || q.includes('db')) {
+                setAiResult(`ĐB hôm nay: ${dbNumbers[0]?.number || '—'}. Đầu ${dbNumbers[0]?.number.slice(0, 2) || '—'}, đuôi ${dbNumbers[0]?.number.slice(-2) || '—'}.`)
+            } else if (q.includes('72')) {
+                setAiResult('Số 72 đã gan 38 kỳ — thuộc nhóm gan dài nhất. Thường hồi phục 5-12 kỳ tiếp theo.')
+            } else if (q.includes('36')) {
+                setAiResult('Số 36 về 4 lần/10 kỳ gần đây — đang trong chu kỳ nóng.')
+            } else if (q.includes('gan')) {
+                setAiResult(`Số gan dài nhất hiện tại: ${loganData[0]?.num || '—'} (${loganData[0]?.days || 0} kỳ).`)
+            } else {
+                setAiResult('Hỏi về đặc biệt, lô gan, hoặc số nóng để được giải đáp.')
+            }
         }
     }
 
     const maxLoganDays = loganData.length > 0 ? Math.max(...loganData.map(l => l.days)) : 1
+
+    // Get date picker base path
+    const getDatePath = (index: number, d: Date): string => {
+        const dateStr = formatDateForUrl(d)
+
+        // For "today", go to the region's main page (not /?date=today)
+        if (index === 0) {
+            if (region === 'home') return '/'
+            if (region === 'vietlott') return '/vietlott'
+            return `/${region}`
+        }
+
+        // For specific dates
+        if (region === 'home') {
+            return `/?date=${dateStr}`
+        }
+        // Vietlott doesn't have date-specific pages yet, go to main page
+        if (region === 'vietlott') {
+            return '/vietlott'
+        }
+        return `/${region}/${dateStr}`
+    }
 
     return (
         <aside className="w-80 shrink-0 space-y-4">
@@ -97,7 +198,7 @@ export default function SideColumn({
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">
-                        Chọn ngày xem kết quả
+                        {config.title} — Chọn ngày
                     </p>
                 </div>
                 <div className="p-3">
@@ -108,7 +209,7 @@ export default function SideColumn({
                             return (
                                 <Link
                                     key={i}
-                                    href={`/${region}${i === 0 ? '' : `/${formatDateForUrl(d)}`}`}
+                                    href={getDatePath(i, d)}
                                     className={`flex flex-col items-center py-2 rounded-lg text-xs transition-colors ${
                                         isActive
                                             ? 'bg-[#C9A84C] text-white font-bold'
@@ -130,52 +231,56 @@ export default function SideColumn({
             <div className="bg-gradient-to-br from-[#0B0E14] to-[#1a2030] rounded-xl overflow-hidden shadow-lg">
                 <div className="px-4 py-3 border-b border-white/10">
                     <div className="flex items-center gap-2 mb-1">
-                        <span className="px-2 py-0.5 rounded bg-[#C9A84C]/20 text-[#E8C97A] text-[10px] font-bold">
+                        <span className={`px-2 py-0.5 rounded ${config.badgeColor} text-[10px] font-bold`}>
                             AI Thiên Số
                         </span>
                     </div>
                     <p className="text-sm font-semibold text-white">
-                        Nhận xét hôm nay — {regionLabel}
+                        {config.aiHeadline}
                     </p>
                 </div>
                 <div className="p-4 text-white/80 text-sm leading-relaxed">
                     {dbNumbers.length > 0 ? (
                         <>
-                            Đặc biệt hôm nay <strong className="text-[#E8C97A]">{dbNumbers[0].number}</strong>
-                            {dbNumbers[0].number.length >= 5 && (
+                            {region === 'vietlott' ? (
                                 <>
-                                    {' '}— đầu <strong className="text-[#E8C97A]">{dbNumbers[0].number.slice(0, 2)}</strong>,
-                                    đuôi <strong className="text-emerald-400">{dbNumbers[0].number.slice(-2)}</strong>.
+                                    {jackpotData?.mega && (
+                                        <p>Mega Jackpot: <strong className="text-[#E8C97A]">{jackpotData.mega}đ</strong></p>
+                                    )}
+                                    {jackpotData?.power && (
+                                        <p className="mt-1">Power Jackpot: <strong className="text-[#E8C97A]">{jackpotData.power}đ</strong></p>
+                                    )}
+                                    {dbNumbers[0]?.number && (
+                                        <p className="mt-2">Kết quả mới nhất: <strong className="text-[#E8C97A]">{dbNumbers[0].number}</strong></p>
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    Đặc biệt: <strong className="text-[#E8C97A]">{dbNumbers[0].number}</strong>
+                                    {dbNumbers[0].number.length >= 5 && (
+                                        <>
+                                            {' '}— đầu <strong className="text-[#E8C97A]">{dbNumbers[0].number.slice(0, 2)}</strong>,
+                                            đuôi <strong className="text-emerald-400">{dbNumbers[0].number.slice(-2)}</strong>.
+                                        </>
+                                    )}
                                 </>
                             )}
                             <br /><br />
-                            Đáng chú ý: <strong>số 72</strong> đã vắng mặt 38 kỳ liên tiếp — theo chu kỳ lịch sử,
-                            nhóm số này thường hồi phục trong vòng 5–12 kỳ tiếp theo.
+                            {loganData[0] ? (
+                                <p>Số gan dài nhất: <strong>{loganData[0].num}</strong> ({loganData[0].days} kỳ chưa về)</p>
+                            ) : (
+                                <p>Chưa có dữ liệu lô gan.</p>
+                            )}
                         </>
                     ) : (
-                        'Chưa có dữ liệu cho kỳ quay này. Hãy quay lại sau khi có kết quả.'
-                    )}
-                </div>
-                <div className="px-4 pb-3 flex flex-wrap gap-2">
-                    {dbNumbers.length > 0 && (
-                        <>
-                            <span className="px-2 py-1 rounded bg-[#C9A84C]/20 text-[#E8C97A] text-[10px] font-semibold">
-                                {dbNumbers[0].number.slice(-2)} đang nóng
-                            </span>
-                            <span className="px-2 py-1 rounded bg-white/10 text-white/70 text-[10px] font-semibold">
-                                Đầu {dbNumbers[0].number.slice(0, 2)} hồi phục
-                            </span>
-                            <span className="px-2 py-1 rounded bg-[#2A6B5C]/30 text-[#3D9B82] text-[10px] font-semibold">
-                                72 lâu chưa về
-                            </span>
-                        </>
+                        <p>Chưa có dữ liệu. Hãy quay lại sau khi có kết quả.</p>
                     )}
                 </div>
                 <div className="px-4 pb-4">
                     <div className="flex gap-2">
                         <input
                             type="text"
-                            placeholder='Hỏi: "Số nào hay về thứ 2?"'
+                            placeholder='Hỏi về kết quả, số nóng...'
                             value={aiInput}
                             onChange={e => setAiInput(e.target.value)}
                             onKeyDown={e => e.key === 'Enter' && handleAiAsk()}
@@ -196,47 +301,71 @@ export default function SideColumn({
                 </div>
             </div>
 
-            {/* Dò vé mini */}
+            {/* Quick Links */}
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                <div className="px-4 py-3 border-b border-gray-100">
-                    <p className="text-sm font-semibold text-gray-800">
-                        🔍 Dò vé nhanh — {regionLabel}
+                <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">
+                        Liên kết nhanh
                     </p>
                 </div>
-                <div className="p-4 space-y-3">
-                    <div>
-                        <label className="block text-xs text-gray-500 mb-1.5">
-                            Nhập số cuối (2–5 chữ số)
-                        </label>
-                        <input
-                            type="text"
-                            value={doveInput}
-                            onChange={e => setDoveInput(e.target.value)}
-                            onKeyDown={e => e.key === 'Enter' && handleDove()}
-                            placeholder="VD: 36 hoặc 736"
-                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#C9A84C] focus:ring-1 focus:ring-[#C9A84C]"
-                        />
+                <div className="p-3">
+                    <div className="flex flex-wrap gap-2">
+                        {config.quickLinks.map((link, i) => (
+                            <Link
+                                key={i}
+                                href={link.href}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-medium ${config.badgeColor} hover:opacity-80 transition-opacity`}
+                            >
+                                {link.label}
+                            </Link>
+                        ))}
                     </div>
-                    <button
-                        onClick={handleDove}
-                        className="w-full py-2 bg-[#C9A84C] text-white rounded-lg text-sm font-semibold hover:bg-[#b8963f] transition-colors"
-                    >
-                        Kiểm tra ngay
-                    </button>
-                    {doveResult && (
-                        <div className={`p-3 rounded-lg text-xs ${doveResult.hit ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-gray-50 text-gray-600 border border-gray-200'}`}>
-                            {doveResult.message}
-                        </div>
-                    )}
                 </div>
             </div>
 
-            {/* Lô gan / Jackpot tracker */}
+            {/* Dò vé mini */}
+            {region !== 'vietlott' && (
+                <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                        <p className="text-sm font-semibold text-gray-800">
+                            🔍 Dò vé nhanh — {regionLabel}
+                        </p>
+                    </div>
+                    <div className="p-4 space-y-3">
+                        <div>
+                            <label className="block text-xs text-gray-500 mb-1.5">
+                                Nhập số cuối (2–5 chữ số)
+                            </label>
+                            <input
+                                type="text"
+                                value={doveInput}
+                                onChange={e => setDoveInput(e.target.value)}
+                                onKeyDown={e => e.key === 'Enter' && handleDove()}
+                                placeholder="VD: 36 hoặc 736"
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#C9A84C] focus:ring-1 focus:ring-[#C9A84C]"
+                            />
+                        </div>
+                        <button
+                            onClick={handleDove}
+                            className="w-full py-2 bg-[#C9A84C] text-white rounded-lg text-sm font-semibold hover:bg-[#b8963f] transition-colors"
+                        >
+                            Kiểm tra ngay
+                        </button>
+                        {doveResult && (
+                            <div className={`p-3 rounded-lg text-xs ${doveResult.hit ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-gray-50 text-gray-600 border border-gray-200'}`}>
+                                {doveResult.message}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Lô gan tracker */}
             {region !== 'vietlott' && (
                 <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                     <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
                         <p className="text-sm font-semibold text-gray-800">
-                            ❄️ Lô gan hôm nay — {regionLabel}
+                            ❄️ Lô gan — {regionLabel}
                         </p>
                         <Link href={`/${region}/thong-ke`} className="text-xs text-[#C9A84C] hover:underline">
                             Xem đủ →
@@ -244,7 +373,7 @@ export default function SideColumn({
                     </div>
                     <div className="p-3 space-y-2">
                         {loganData.length > 0 ? (
-                            loganData.map((item, i) => (
+                            loganData.slice(0, 5).map((item, i) => (
                                 <div key={i} className="flex items-center gap-3">
                                     <span className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold ${
                                         item.isHot
@@ -257,7 +386,7 @@ export default function SideColumn({
                                         <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                                             <div
                                                 className={`h-full rounded-full transition-all ${item.isHot ? 'bg-amber-400' : 'bg-gray-300'}`}
-                                                style={{ width: `${(item.days / maxLoganDays) * 100}%` }}
+                                                style={{ width: `${Math.min((item.days / 40) * 100, 100)}%` }}
                                             />
                                         </div>
                                     </div>
@@ -302,7 +431,7 @@ export default function SideColumn({
                                 <p className="text-xl font-black text-blue-700">{jackpotData.power}đ</p>
                             </div>
                         )}
-                        {!jackpotData.mega && !jackpotData.power && (
+                        {(!jackpotData.mega && !jackpotData.power) && (
                             <p className="text-xs text-gray-400 text-center py-2">
                                 Chưa có dữ liệu jackpot
                             </p>
