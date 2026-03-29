@@ -5,8 +5,15 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import SideColumn from '@/components/SideColumn'
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 3600
+// KHÔNG dùng generateStaticParams — nếu có, Next.js sẽ pre-render TẤT CẢ
+// pages tại build time, gây DB connection pool exhaustion (connection_limit=1).
+//
+// Thay vào đó:
+//   - dynamic = 'force-static': page được tạo ON-DEMAND khi có request đầu tiên
+//   - revalidate = 2592000: cache trong 30 ngày
+//   - Sau khi crawl xong → gọi revalidatePath('/xsmb/[date]') để cập nhật
+export const dynamic = 'force-static'
+export const revalidate = 2592000 // 30 days
 
 const PRIZE_ORDER = ['DB', 'G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7']
 const PRIZE_LABEL: Record<string, string> = {
@@ -39,10 +46,6 @@ function formatDateForUrl(date: Date): string {
 function isValidDateFormat(dateStr: string): boolean {
     return /^\d{2}-\d{2}-\d{4}$/.test(dateStr) && parseDate(dateStr) !== null
 }
-
-// Pages are rendered on-demand via ISR (revalidate = 3600)
-// No need to pre-render all historical dates at build time
-// which would exhaust the DB connection pool (connection_limit=1)
 
 // ── SEO ──
 export async function generateMetadata(

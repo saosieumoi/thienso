@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { crawlXSMB } from '@/scripts/crawlers/xsmb'
 
 export const maxDuration = 60 // timeout 60s cho Vercel
@@ -17,6 +18,14 @@ export async function GET(request: Request) {
         const executionMs = Date.now() - startTime
 
         console.log(`[Cron XSMB] Done in ${executionMs}ms:`, result)
+
+        // Revalidate XSMB homepage và trang ngày vừa crawl
+        revalidatePath('/xsmb')
+        if (result.success && result.drawDate) {
+            const datePath = `/xsmb/${result.drawDate}`
+            revalidatePath(datePath)
+            console.log(`[Cron XSMB] Revalidated: ${datePath}`)
+        }
 
         return NextResponse.json({
             ...result,
