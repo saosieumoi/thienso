@@ -184,9 +184,9 @@ export default function SideColumn({
         if (region === 'home') {
             return `/?date=${dateStr}`
         }
-        // Vietlott doesn't have date-specific pages yet, go to main page
+        // Vietlott has date-specific pages
         if (region === 'vietlott') {
-            return '/vietlott'
+            return `/vietlott/${dateStr}`
         }
         return `/${region}/${dateStr}`
     }

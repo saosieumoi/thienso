@@ -6,7 +6,6 @@ import SideColumn from '@/components/SideColumn'
 
 // Prevent build-time pre-rendering to avoid DB connection pool exhaustion
 export const dynamic = 'force-dynamic'
-export const revalidate = 300
 
 export const metadata: Metadata = {
     title: 'Kết quả Vietlott — Mega 6/45, Power 6/55, Max 3D, Keno — Thiên Số',
